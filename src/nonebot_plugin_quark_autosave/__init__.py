@@ -74,7 +74,7 @@ async def _(shareurl: str, state: T_State):
     state["shareurl"] = shareurl
 
 
-@qas.got_path("pattern_idx", f"请输入模式索引: \n({MagicRegex.patterns_alias_str()})")
+@qas.got_path("pattern_idx", f"请输入模式索引: \n{MagicRegex.patterns_alias_str()}")
 async def _(pattern_idx: Literal["0", "1", "2", "3"], state: T_State):
     state["pattern_idx"] = int(pattern_idx)
 
@@ -105,6 +105,7 @@ async def _(state: T_State):
     pattern_idx = state["pattern_idx"]
     inner = state["inner"]
     add_startfid = state["add_startfid"]
+    runweek = state["runweek"]
 
     async with QASClient() as client:
         task = await client.add_task(
@@ -113,5 +114,6 @@ async def _(state: T_State):
             pattern_idx=pattern_idx,
             inner=inner,
             add_startfid=add_startfid,
+            runweek=runweek,
         )
     await qas.finish(f"🎉 添加任务成功 🎉\n{task}")
