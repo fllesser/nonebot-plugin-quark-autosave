@@ -1,10 +1,10 @@
 [project]
-name = "nonebot-plugin-template"
+name = "nonebot-plugin-quark-autosave"
 version = "0.1.0"
 description = "插件描述"
 readme = "README.md"
-authors = [{ name = "owner", email = "owner@gmail.com" }]
-urls = { Repository = "https://github.com/owner/nonebot-plugin-template" }
+authors = [{ name = "fllesser", email = "fllesser@gmail.com" }]
+urls = { Repository = "https://github.com/fllesser/nonebot-plugin-quark-autosave" }
 requires-python = ">=3.10"
 dependencies = [
   "nonebot2>=2.4.3,<3.0.0",
@@ -37,7 +37,7 @@ test = [
 ]
 
 [tool.nonebot]
-plugins = ["nonebot_plugin_template"]
+plugins = ["nonebot_plugin_quark_autosave"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
@@ -129,5 +129,5 @@ tag = true
 
 [[tool.bumpversion.files]]
 filename = "uv.lock"
-search = "name = \"nonebot-plugin-template\"\nversion = \"{current_version}\""
-replace = "name = \"nonebot-plugin-template\"\nversion = \"{new_version}\""
+search = "name = \"nonebot-plugin-quark-autosave\"\nversion = \"{current_version}\""
+replace = "name = \"nonebot-plugin-quark-autosave\"\nversion = \"{new_version}\""
