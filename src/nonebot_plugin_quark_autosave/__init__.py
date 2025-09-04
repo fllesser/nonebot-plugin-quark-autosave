@@ -72,12 +72,12 @@ async def _(pattern_idx: PatternIdx, state: T_State):
     state["pattern_idx"] = pattern_idx
 
 
-@qas.got_path("inner", "是否以二级目录作为视频文件夹")
+@qas.got("inner", "是否以二级目录作为视频文件夹")
 async def _(inner: bool, state: T_State):
     state["inner"] = inner
 
 
-@qas.got_path("add_startfid", "是否添加起始文件ID")
+@qas.got("add_startfid", "是否添加起始文件ID")
 async def _(add_startfid: bool, state: T_State):
     state["add_startfid"] = add_startfid
 
