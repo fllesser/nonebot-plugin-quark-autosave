@@ -1,3 +1,5 @@
+from typing import Literal
+
 import httpx
 from nonebot import logger
 
@@ -38,6 +40,7 @@ class QASClient:
         pattern_idx: PatternIdx = 0,
         inner: bool = True,
         add_startfid: bool = True,
+        runweek: list[Literal[1, 2, 3, 4, 5, 6, 7]] = [5, 6, 7],
     ):
         """添加任务
 
@@ -60,6 +63,8 @@ class QASClient:
 
             else:
                 task.startfid = detail.last_update_file_fid
+
+        task.runweek = runweek
 
         response = await self.client.post("/api/add_task", json=model_dump(task))
         resp_json = response.json()

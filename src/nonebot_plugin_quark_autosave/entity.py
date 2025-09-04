@@ -202,6 +202,10 @@ class MagicRegex(BaseModel):
         return [cls.tv_regex.pattern, cls.black_word.pattern, cls.show_magic.pattern, cls.tv_magic.pattern]
 
     @classmethod
+    def patterns_str(cls) -> str:
+        return "\n".join(cls.patterns())
+
+    @classmethod
     def get_pattern_alias(cls, pattern_idx: PatternIdx) -> str:
         match pattern_idx:
             case 0:

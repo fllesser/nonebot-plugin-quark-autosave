@@ -1,6 +1,6 @@
 from typing import Literal
 
-from nonebot import require
+from nonebot import logger, require
 from nonebot.permission import SUPERUSER
 from nonebot.plugin import PluginMetadata, inherit_supported_adapters
 from nonebot.typing import T_State
@@ -34,6 +34,7 @@ qas = on_alconna(
         Args["pattern_idx?", Literal[0, 1, 2, 3]],
         Args["inner?", Literal["是", "否"]],
         Args["add_startfid?", Literal["是", "否"]],
+        Args["runweek?", list[Literal[1, 2, 3, 4, 5, 6, 7]]],
     ),
     permission=SUPERUSER,
 )
@@ -46,6 +47,7 @@ async def _(
     pattern_idx: Match[Literal[0, 1, 2, 3]],
     inner: Match[Literal["是", "否"]],
     add_startfid: Match[Literal["是", "否"]],
+    runweek: Match[list[Literal[1, 2, 3, 4, 5, 6, 7]]],
 ):
     if shareurl.available:
         qas.set_path_arg("shareurl", shareurl.result)
@@ -57,6 +59,8 @@ async def _(
         qas.set_path_arg("inner", inner.result)
     if add_startfid.available:
         qas.set_path_arg("add_startfid", add_startfid.result)
+    if runweek.available:
+        qas.set_path_arg("runweek", runweek.result)
 
 
 @qas.got_path("taskname", "请输入任务名称")
@@ -82,6 +86,12 @@ async def _(inner: Literal["是", "否"], state: T_State):
 @qas.got_path("add_startfid", prompt="是否添加起始文件ID")
 async def _(add_startfid: Literal["是", "否"], state: T_State):
     state["add_startfid"] = add_startfid == "是"
+
+
+@qas.got_path("runweek", "请输入运行周期(1-7),用逗号分隔")
+async def _(runweek: list[Literal[1, 2, 3, 4, 5, 6, 7]], state: T_State):
+    logger.info(f"runweek: {runweek}")
+    state["runweek"] = runweek
 
 
 @qas.handle()
