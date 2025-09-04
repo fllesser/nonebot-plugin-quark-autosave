@@ -1,6 +1,6 @@
 from typing import Literal
 
-from nonebot import logger, require
+from nonebot import require
 from nonebot.permission import SUPERUSER
 from nonebot.plugin import PluginMetadata, inherit_supported_adapters
 from nonebot.typing import T_State
@@ -29,9 +29,9 @@ from nonebot_plugin_alconna import Match, on_alconna
 qas = on_alconna(
     Alconna(
         "qas",
-        Args["url?", str],
         Args["taskname?", str],
-        Args["pattern_idx?", int],
+        Args["shareurl?", str],
+        Args["pattern_idx?", Literal[0, 1, 2, 3]],
         Args["inner?", Literal["是", "否"]],
         Args["add_startfid?", Literal["是", "否"]],
     ),
@@ -41,14 +41,14 @@ qas = on_alconna(
 
 @qas.handle()
 async def _(
-    url: Match[str],
+    shareurl: Match[str],
     taskname: Match[str],
-    pattern_idx: Match[int],
+    pattern_idx: Match[Literal[0, 1, 2, 3]],
     inner: Match[Literal["是", "否"]],
     add_startfid: Match[Literal["是", "否"]],
 ):
-    if url.available:
-        qas.set_path_arg("url", url.result)
+    if shareurl.available:
+        qas.set_path_arg("shareurl", shareurl.result)
     if taskname.available:
         qas.set_path_arg("taskname", taskname.result)
     if pattern_idx.available:
@@ -59,26 +59,23 @@ async def _(
         qas.set_path_arg("add_startfid", add_startfid.result)
 
 
-@qas.got_path("url", "请输入分享链接")
-async def _(url: str, state: T_State):
-    state["url"] = url
-
-
 @qas.got_path("taskname", "请输入任务名称")
 async def _(taskname: str, state: T_State):
     state["taskname"] = taskname
 
 
-@qas.got_path("pattern_idx", "请输入模式索引")
-async def _(pattern_idx: int, state: T_State):
-    if pattern_idx not in [0, 1, 2, 3]:
-        await qas.reject("模式索引必须为 0, 1, 2, 3 中的一个")
+@qas.got_path("shareurl", "请输入分享链接")
+async def _(shareurl: str, state: T_State):
+    state["shareurl"] = shareurl
+
+
+@qas.got_path("pattern_idx", "请输入模式索引(0, 1, 2, 3)")
+async def _(pattern_idx: Literal[0, 1, 2, 3], state: T_State):
     state["pattern_idx"] = pattern_idx
 
 
 @qas.got_path("inner", "是否以二级目录作为视频文件夹")
 async def _(inner: Literal["是", "否"], state: T_State):
-    logger.info(f"inner: {inner}")
     state["inner"] = inner == "是"
 
 
@@ -89,7 +86,7 @@ async def _(add_startfid: Literal["是", "否"], state: T_State):
 
 @qas.handle()
 async def _(state: T_State):
-    url = state["url"]
+    shareurl = state["shareurl"]
     taskname = state["taskname"]
     pattern_idx = state["pattern_idx"]
     inner = state["inner"]
@@ -97,7 +94,7 @@ async def _(state: T_State):
 
     async with QASClient() as client:
         task = await client.add_task(
-            shareurl=url,
+            shareurl=shareurl,
             taskname=taskname,
             pattern_idx=pattern_idx,
             inner=inner,
