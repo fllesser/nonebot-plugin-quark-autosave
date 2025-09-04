@@ -31,9 +31,7 @@ from nonebot_plugin_alconna import Match, on_alconna
 qas = on_alconna(
     Alconna(
         "qas",
-        Args["url?", str],
-        Args["taskname?", str],
-        Args["pattern_idx?", PatternIdx],
+        Args["url?", str, "taskname?", str, "pattern_idx?", int],
         Option("-i|--inner"),
         Option("-a|--add_startfid"),
     ),
@@ -68,7 +66,9 @@ async def _(taskname: str, state: T_State):
 
 
 @qas.got_path("pattern_idx", "请输入模式索引")
-async def _(pattern_idx: PatternIdx, state: T_State):
+async def _(pattern_idx: int, state: T_State):
+    if pattern_idx not in [0, 1, 2, 3]:
+        await qas.reject("模式索引必须为 0, 1, 2, 3 中的一个")
     state["pattern_idx"] = pattern_idx
 
 
