@@ -1,3 +1,5 @@
+from typing import Literal
+
 from nonebot import require
 from nonebot.permission import SUPERUSER
 from nonebot.plugin import PluginMetadata, inherit_supported_adapters
@@ -5,22 +7,19 @@ from nonebot.typing import T_State
 
 from nonebot_plugin_quark_autosave.client import QASClient
 
-require("nonebot_plugin_uninfo")
 require("nonebot_plugin_alconna")
-require("nonebot_plugin_localstore")
-require("nonebot_plugin_apscheduler")
 from .config import Config
 
 __plugin_meta__ = PluginMetadata(
-    name="名称",
-    description="描述",
-    usage="用法",
+    name="Quark Auto Save",
+    description="配合 quark-auto-save, 快速添加自动保存任务",
+    usage="qas",
     type="application",  # library
     homepage="https://github.com/fllesser/nonebot-plugin-quark-autosave",
     config=Config,
-    supported_adapters=inherit_supported_adapters("nonebot_plugin_alconna", "nonebot_plugin_uninfo"),
+    supported_adapters=inherit_supported_adapters("nonebot_plugin_alconna"),
     # supported_adapters={"~onebot.v11"}, # 仅 onebot
-    extra={"author": "fllesser <your@mail.com>"},
+    extra={"author": "fllesser <fllessive@mail.com>"},
 )
 
 from arclet.alconna import Alconna, Args, Option
@@ -33,8 +32,8 @@ qas = on_alconna(
         Args["url?", str],
         Args["taskname?", str],
         Args["pattern_idx?", int],
-        Option("-i|--inner"),
-        Option("-a|--add_startfid"),
+        Option("-i|--inner", Args["inner?", Literal["是", "否"]]),
+        Option("-a|--add_startfid", Args["add_startfid?", Literal["是", "否"]]),
     ),
     permission=SUPERUSER,
 )
@@ -42,7 +41,11 @@ qas = on_alconna(
 
 @qas.handle()
 async def _(
-    url: Match[str], taskname: Match[str], pattern_idx: Match[int], inner: Match[bool], add_startfid: Match[bool]
+    url: Match[str],
+    taskname: Match[str],
+    pattern_idx: Match[int],
+    inner: Match[Literal["是", "否"]],
+    add_startfid: Match[Literal["是", "否"]],
 ):
     if url.available:
         qas.set_path_arg("url", url.result)
@@ -74,13 +77,13 @@ async def _(pattern_idx: int, state: T_State):
 
 
 @qas.got("inner", "是否以二级目录作为视频文件夹")
-async def _(inner: bool, state: T_State):
-    state["inner"] = inner
+async def _(inner: Literal["是", "否"], state: T_State):
+    state["inner"] = inner == "是"
 
 
-@qas.got("add_startfid", "是否添加起始文件ID")
-async def _(add_startfid: bool, state: T_State):
-    state["add_startfid"] = add_startfid
+@qas.got("add_startfid", prompt="是否添加起始文件ID")
+async def _(add_startfid: Literal["是", "否"], state: T_State):
+    state["add_startfid"] = add_startfid == "是"
 
 
 @qas.handle()
@@ -99,4 +102,4 @@ async def _(state: T_State):
             inner=inner,
             add_startfid=add_startfid,
         )
-    await qas.finish(f"添加任务成功: {task}")
+    await qas.finish(f"🎉 添加任务成功 🎉\n{task}")

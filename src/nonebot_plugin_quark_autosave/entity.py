@@ -239,12 +239,12 @@ class TaskItem(BaseModel):
 
     def __str__(self):
         return (
-            f"任务名: {self.taskname}\n"
+            f"任务名称: {self.taskname}\n"
             f"分享链接: {self.shareurl}\n"
             f"保存路径: {self.savepath}\n"
             f"匹配规则: {self.pattern}\n"
             f"替换规则: {self.replace}\n"
-            f"结束日期: {self.enddate}\n"
+            f"结束日期: {self.enddate if self.enddate else '始终有效'}\n"
             f"运行周期: {self.runweek}\n"
             f"附加配置: {self.addition}\n"
             f"忽略扩展名: {self.ignore_extension}\n"
