@@ -38,7 +38,7 @@ async def test_pip(app: App):
 
     event = make_onebot_event(Message("pip install nonebot2"))
     try:
-        from nonebot_plugin_quark_autosave import pip
+        from nonebot_plugin_quark_autosave import pip  # type: ignore
     except ImportError:
         pytest.skip("nonebot_plugin_quark_autosave.pip not found")
 

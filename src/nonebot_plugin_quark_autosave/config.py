@@ -1,9 +1,12 @@
 from nonebot import get_driver, get_plugin_config
+import nonebot_plugin_localstore as store
 from pydantic import BaseModel
 
 
 class Config(BaseModel):
-    pass
+    quark_autosave_endpoint: str = "http://127.0.0.1:5005"
+    quark_autosave_token: str | None = None
+    quark_auto_save_path_base: str = "QuarkAutoSave"
 
 
 # 配置加载
@@ -12,3 +15,5 @@ global_config = get_driver().config
 
 # 全局名称
 NICKNAME: str = next(iter(global_config.nickname), "")
+
+data_dir = store.get_plugin_data_dir()
