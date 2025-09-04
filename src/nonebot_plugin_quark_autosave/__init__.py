@@ -31,10 +31,10 @@ qas = on_alconna(
         "qas",
         Args["taskname?", str],
         Args["shareurl?", str],
-        Args["pattern_idx?", Literal[0, 1, 2, 3]],
+        Args["pattern_idx?", Literal["0", "1", "2", "3"]],
         Args["inner?", Literal["是", "否"]],
         Args["add_startfid?", Literal["是", "否"]],
-        Args["runweek?", list[Literal[1, 2, 3, 4, 5, 6, 7]]],
+        Args["runweek?", str],
     ),
     permission=SUPERUSER,
 )
@@ -44,10 +44,10 @@ qas = on_alconna(
 async def _(
     shareurl: Match[str],
     taskname: Match[str],
-    pattern_idx: Match[Literal[0, 1, 2, 3]],
+    pattern_idx: Match[Literal["0", "1", "2", "3"]],
     inner: Match[Literal["是", "否"]],
     add_startfid: Match[Literal["是", "否"]],
-    runweek: Match[list[Literal[1, 2, 3, 4, 5, 6, 7]]],
+    runweek: Match[str],
 ):
     if shareurl.available:
         qas.set_path_arg("shareurl", shareurl.result)
@@ -74,8 +74,8 @@ async def _(shareurl: str, state: T_State):
 
 
 @qas.got_path("pattern_idx", "请输入模式索引(0, 1, 2, 3)")
-async def _(pattern_idx: Literal[0, 1, 2, 3], state: T_State):
-    state["pattern_idx"] = pattern_idx
+async def _(pattern_idx: Literal["0", "1", "2", "3"], state: T_State):
+    state["pattern_idx"] = int(pattern_idx)
 
 
 @qas.got_path("inner", "是否以二级目录作为视频文件夹")
@@ -88,10 +88,10 @@ async def _(add_startfid: Literal["是", "否"], state: T_State):
     state["add_startfid"] = add_startfid == "是"
 
 
-@qas.got_path("runweek", "请输入运行周期(1-7),用逗号分隔")
-async def _(runweek: list[Literal[1, 2, 3, 4, 5, 6, 7]], state: T_State):
+@qas.got_path("runweek", "请输入运行周期(1-7), 用逗号分隔")
+async def _(runweek: str, state: T_State):
+    state["runweek"] = [int(week) for week in runweek.split(",")]
     logger.info(f"runweek: {runweek}")
-    state["runweek"] = runweek
 
 
 @qas.handle()
