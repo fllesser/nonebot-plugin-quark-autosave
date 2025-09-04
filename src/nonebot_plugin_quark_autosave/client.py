@@ -3,10 +3,9 @@ from typing import Literal
 import httpx
 from nonebot import logger
 
-from nonebot_plugin_quark_autosave.exception import QuarkAutosaveException
-
 from .config import plugin_config
 from .entity import AutosaveData, DetailInfo, PatternIdx, QASResult, ShareDetailPayload, TaskItem, model_dump
+from .exception import QuarkAutosaveException
 
 
 class QASClient:

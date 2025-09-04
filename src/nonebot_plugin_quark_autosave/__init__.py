@@ -1,7 +1,6 @@
 import re
 from typing import Literal
 
-from nepattern import BasePattern
 from nonebot import logger, require
 from nonebot.permission import SUPERUSER
 from nonebot.plugin import PluginMetadata, inherit_supported_adapters
