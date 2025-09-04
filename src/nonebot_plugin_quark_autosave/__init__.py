@@ -22,7 +22,7 @@ __plugin_meta__ = PluginMetadata(
     extra={"author": "fllesser <fllessive@mail.com>"},
 )
 
-from arclet.alconna import Alconna, Args, Option
+from arclet.alconna import Alconna, Args
 from nonebot_plugin_alconna import Match, on_alconna
 
 # 快速添加 auto save 任务
@@ -32,8 +32,8 @@ qas = on_alconna(
         Args["url?", str],
         Args["taskname?", str],
         Args["pattern_idx?", int],
-        Option("-i|--inner", Args["inner?", Literal["是", "否"]]),
-        Option("-a|--add_startfid", Args["add_startfid?", Literal["是", "否"]]),
+        Args["inner?", Literal["是", "否"]],
+        Args["add_startfid?", Literal["是", "否"]],
     ),
     permission=SUPERUSER,
 )
@@ -76,13 +76,13 @@ async def _(pattern_idx: int, state: T_State):
     state["pattern_idx"] = pattern_idx
 
 
-@qas.got("inner", "是否以二级目录作为视频文件夹")
+@qas.got_path("inner", "是否以二级目录作为视频文件夹")
 async def _(inner: Literal["是", "否"], state: T_State):
     logger.info(f"inner: {inner}")
     state["inner"] = inner == "是"
 
 
-@qas.got("add_startfid", prompt="是否添加起始文件ID")
+@qas.got_path("add_startfid", prompt="是否添加起始文件ID")
 async def _(add_startfid: Literal["是", "否"], state: T_State):
     state["add_startfid"] = add_startfid == "是"
 
