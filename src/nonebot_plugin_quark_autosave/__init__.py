@@ -1,7 +1,7 @@
 import re
 from typing import Literal
 
-from nonebot import logger, require
+from nonebot import logger, require  # noqa: F401
 from nonebot.permission import SUPERUSER
 from nonebot.plugin import PluginMetadata, inherit_supported_adapters
 from nonebot.typing import T_State
@@ -74,7 +74,7 @@ async def _(shareurl: str, state: T_State):
     state["shareurl"] = shareurl
 
 
-@qas.got_path("pattern_idx", f"请输入模式索引({MagicRegex.patterns_str()})")
+@qas.got_path("pattern_idx", f"请输入模式索引: \n({MagicRegex.patterns_alias_str()})")
 async def _(pattern_idx: Literal["0", "1", "2", "3"], state: T_State):
     state["pattern_idx"] = int(pattern_idx)
 

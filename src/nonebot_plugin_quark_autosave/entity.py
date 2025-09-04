@@ -199,11 +199,31 @@ class MagicRegex(BaseModel):
 
     @classmethod
     def patterns(cls) -> list[str]:
-        return [cls.tv_regex.pattern, cls.black_word.pattern, cls.show_magic.pattern, cls.tv_magic.pattern]
+        patterns = MagicRegex()
+        return [
+            patterns.tv_regex.pattern,
+            patterns.black_word.pattern,
+            patterns.show_magic.pattern,
+            patterns.tv_magic.pattern,
+        ]
 
     @classmethod
     def patterns_str(cls) -> str:
-        return "\n".join(cls.patterns())
+        # 加上索引
+        return "\n".join(f"{i}. {pattern}" for i, pattern in enumerate(cls.patterns()))
+
+    @classmethod
+    def patterns_alias(cls) -> list[str]:
+        return [
+            "$TV_REGEX",
+            "$BLACK_WORD",
+            "$SHOW_MAGIC",
+            "$TV_MAGIC",
+        ]
+
+    @classmethod
+    def patterns_alias_str(cls) -> str:
+        return "\n".join(f" - {i}. {alias}" for i, alias in enumerate(cls.patterns_alias()))
 
     @classmethod
     def get_pattern_alias(cls, pattern_idx: PatternIdx) -> str:
