@@ -1,6 +1,6 @@
 from typing import Literal
 
-from nonebot import require
+from nonebot import logger, require
 from nonebot.permission import SUPERUSER
 from nonebot.plugin import PluginMetadata, inherit_supported_adapters
 from nonebot.typing import T_State
@@ -78,6 +78,7 @@ async def _(pattern_idx: int, state: T_State):
 
 @qas.got("inner", "是否以二级目录作为视频文件夹")
 async def _(inner: Literal["是", "否"], state: T_State):
+    logger.info(f"inner: {inner}")
     state["inner"] = inner == "是"
 
 

@@ -224,6 +224,15 @@ class Addition(BaseModel):
     emby: dict[str, Any] = Field(default_factory=lambda: {"try_match": False, "media_id": ""})
     fnv: dict[str, Any] = Field(default_factory=lambda: {"auto_refresh": False, "mdb_name": ""})
 
+    def __str__(self):
+        return (
+            f" - smartstrm: {self.smartstrm}\n"
+            f" - alist_strm_gen: {self.alist_strm_gen}\n"
+            f" - alist_sync: {self.alist_sync}\n"
+            f" - aria2: {self.aria2}\n"
+            f" - emby: {self.emby}\n"
+            f" - fnv: {self.fnv}\n"
+        )
 
 class TaskItem(BaseModel):
     taskname: str

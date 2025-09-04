@@ -47,14 +47,14 @@ class QASClient:
             pattern_idx (int, optional): 模式索引. Defaults to 0. available: 0, 1, 2, 3
             inner (bool, optional): 是否下一级目录. Defaults to True.
         """
-        save_path = f"{plugin_config.quark_auto_save_path_base}/{taskname}"
+
         task = TaskItem.common_template(taskname, shareurl, pattern_idx)
 
         detail = await self.get_share_detail(task)
         if add_startfid:
             if inner:
                 inner_url = f"{task.shareurl}#/list/share/{detail.share.first_fid}"
-                task = TaskItem(taskname=taskname, shareurl=inner_url, savepath=save_path)
+                task = TaskItem.common_template(taskname=taskname, shareurl=inner_url)
                 inner_detail = await self.get_share_detail(task)
                 task.startfid = inner_detail.last_update_file_fid
 
