@@ -234,6 +234,7 @@ class Addition(BaseModel):
             f" - fnv: {self.fnv}\n"
         )
 
+
 class TaskItem(BaseModel):
     taskname: str
     shareurl: str
