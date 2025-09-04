@@ -1,14 +1,16 @@
+import re
 from typing import Literal
 
+from nepattern import BasePattern
 from nonebot import logger, require
 from nonebot.permission import SUPERUSER
 from nonebot.plugin import PluginMetadata, inherit_supported_adapters
 from nonebot.typing import T_State
 
-from nonebot_plugin_quark_autosave.client import QASClient
-
 require("nonebot_plugin_alconna")
+from .client import QASClient
 from .config import Config
+from .entity import MagicRegex
 
 __plugin_meta__ = PluginMetadata(
     name="Quark Auto Save",
@@ -32,8 +34,8 @@ qas = on_alconna(
         Args["taskname?", str],
         Args["shareurl?", str],
         Args["pattern_idx?", Literal["0", "1", "2", "3"]],
-        Args["inner?", Literal["是", "否"]],
-        Args["add_startfid?", Literal["是", "否"]],
+        Args["inner?", Literal["1", "0"]],
+        Args["add_startfid?", Literal["1", "0"]],
         Args["runweek?", str],
     ),
     permission=SUPERUSER,
@@ -73,25 +75,28 @@ async def _(shareurl: str, state: T_State):
     state["shareurl"] = shareurl
 
 
-@qas.got_path("pattern_idx", "请输入模式索引(0, 1, 2, 3)")
+@qas.got_path("pattern_idx", f"请输入模式索引({MagicRegex.patterns_str()})")
 async def _(pattern_idx: Literal["0", "1", "2", "3"], state: T_State):
     state["pattern_idx"] = int(pattern_idx)
 
 
-@qas.got_path("inner", "是否以二级目录作为视频文件夹")
-async def _(inner: Literal["是", "否"], state: T_State):
-    state["inner"] = inner == "是"
+@qas.got_path("inner", "是(1)否(0)以二级目录作为视频文件夹")
+async def _(inner: Literal["1", "0"], state: T_State):
+    state["inner"] = inner == "1"
 
 
-@qas.got_path("add_startfid", prompt="是否添加起始文件ID")
-async def _(add_startfid: Literal["是", "否"], state: T_State):
-    state["add_startfid"] = add_startfid == "是"
+@qas.got_path("add_startfid", prompt="是(1)否(0)添加起始文件ID")
+async def _(add_startfid: Literal["1", "0"], state: T_State):
+    state["add_startfid"] = add_startfid == "1"
 
 
-@qas.got_path("runweek", "请输入运行周期(1-7), 用逗号分隔")
+@qas.got_path("runweek", "请输入运行周期(1-7), 用空格分隔")
 async def _(runweek: str, state: T_State):
-    state["runweek"] = [int(week) for week in runweek.split(",")]
-    logger.info(f"runweek: {runweek}")
+    pattern = r"^[1-7]( [1-7])*$"
+    if matched := re.match(pattern, runweek):
+        state["runweek"] = [int(week) for week in matched.group(0).split(" ")]
+    else:
+        await qas.reject_path("runweek")
 
 
 @qas.handle()
