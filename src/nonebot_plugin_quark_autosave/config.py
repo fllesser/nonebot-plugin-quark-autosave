@@ -1,5 +1,4 @@
 from nonebot import get_driver, get_plugin_config
-import nonebot_plugin_localstore as store
 from pydantic import BaseModel
 
 
@@ -15,5 +14,3 @@ global_config = get_driver().config
 
 # 全局名称
 NICKNAME: str = next(iter(global_config.nickname), "")
-
-data_dir = store.get_plugin_data_dir()
