@@ -4,7 +4,6 @@ from nonebot.plugin import PluginMetadata, inherit_supported_adapters
 from nonebot.typing import T_State
 
 from nonebot_plugin_quark_autosave.client import QASClient
-from nonebot_plugin_quark_autosave.entity import PatternIdx
 
 require("nonebot_plugin_uninfo")
 require("nonebot_plugin_alconna")
@@ -31,7 +30,9 @@ from nonebot_plugin_alconna import Match, on_alconna
 qas = on_alconna(
     Alconna(
         "qas",
-        Args["url?", str, "taskname?", str, "pattern_idx?", int],
+        Args["url?", str],
+        Args["taskname?", str],
+        Args["pattern_idx?", int],
         Option("-i|--inner"),
         Option("-a|--add_startfid"),
     ),
