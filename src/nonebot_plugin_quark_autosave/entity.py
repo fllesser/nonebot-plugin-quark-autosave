@@ -12,22 +12,6 @@ PYDANTIC_V2 = pydantic.__version__ >= "2.0.0"
 T = TypeVar("T", bound=BaseModel)
 
 
-def conditional_validator(field_name: str):
-    """根据 Pydantic 版本选择合适的验证器装饰器"""
-
-    def decorator(func):
-        if PYDANTIC_V2:
-            from pydantic import field_validator
-
-            return field_validator(field_name, mode="before")(func)
-        else:
-            from pydantic import validator
-
-            return validator(field_name, pre=True, always=True)(func)
-
-    return decorator
-
-
 # type 泛化类型
 class QASResult(BaseModel, Generic[T]):
     success: bool
@@ -84,7 +68,8 @@ class FileItem(BaseModel):
 
     @property
     def regex_result(self) -> str:
-        return f"{self.file_name} -> {self.file_name_re or f'{self.file_name_saved} (已存盘)'}"
+        res_name = self.file_name_re or (f"{self.file_name_saved} (已存盘)" if self.file_name_saved else None)
+        return f"{self.file_name} -> {res_name}"
 
 
 class SharePath(BaseModel):
@@ -102,24 +87,6 @@ class DetailInfo(BaseModel):
     @property
     def last_update_file_fid(self) -> str:
         return max(self.file_list, key=lambda x: x.updated_at).fid
-
-    def display_file_list(self, start_fid: str | None = None, limit: int = 10) -> str:
-        """显示文件列表
-
-        Args:
-            limit (int, optional): 显示的文件数量. Defaults to 10.
-
-        Returns:
-            str: 文件列表
-        """
-        # 如果 start_fid 不为空，则过滤掉小于 start_fid 的文件
-        if start_fid:
-            self.file_list = [file for file in self.file_list if file.fid >= start_fid]
-        res_lst = [file.regex_result for file in self.file_list]
-        # 取前10个
-        res_lst = res_lst[:limit]
-        # 0. 文件名 -> 正则处理后的文件名
-        return "\n".join(f"{i}. {result}" for i, result in enumerate(res_lst))
 
 
 class AlistPlugin(BaseModel):
@@ -256,10 +223,12 @@ class MagicRegex(BaseModel):
 
     @classmethod
     def patterns_alias_str(cls) -> str:
+        """显示模式索引和别名"""
         return "\n".join(f" - {i}. {alias}" for i, alias in enumerate(cls.patterns_alias()))
 
     @classmethod
     def get_pattern_alias(cls, pattern_idx: PatternIdx) -> str:
+        """根据模式索引获取模式别名"""
         match pattern_idx:
             case 0:
                 return "$TV_REGEX"
@@ -275,7 +244,7 @@ class Addition(BaseModel):
     smartstrm: dict[str, Any] = Field(default_factory=dict)
     alist_strm_gen: dict[str, Any] = Field(default_factory=lambda: {"auto_gen": False})
     alist_sync: dict[str, Any] = Field(
-        default_factory=lambda: {"enable": True, "save_path": "", "verify_path": "", "full_path_mode": False}
+        default_factory=lambda: {"enable": False, "save_path": "", "verify_path": "", "full_path_mode": False}
     )
     aria2: dict[str, Any] = Field(default_factory=lambda: {"auto_download": False, "pause": False})
     emby: dict[str, Any] = Field(default_factory=lambda: {"try_match": False, "media_id": ""})
@@ -303,6 +272,9 @@ class TaskItem(BaseModel):
     ignore_extension: bool = False
     runweek: list[Literal[1, 2, 3, 4, 5, 6, 7]] = [5, 6, 7]
     startfid: str | None = None
+
+    detail_info: DetailInfo | None = Field(default=None, exclude=True)
+    start_fid_updated_at: int = Field(default=1, exclude=True)
 
     def __str__(self):
         return (
@@ -333,7 +305,30 @@ class TaskItem(BaseModel):
         )
 
     def set_pattern(self, pattern_idx: PatternIdx):
+        """设置匹配模式"""
         self.pattern = MagicRegex.get_pattern_alias(pattern_idx)
+
+    def detail(self) -> DetailInfo:
+        """获取详情信息"""
+        assert self.detail_info is not None
+        return self.detail_info
+
+    def set_startfid(self, startfid_idx: int):
+        """设置起始文件"""
+        assert self.detail_info is not None
+        file = self.detail_info.file_list[startfid_idx]
+        self.startfid = file.fid
+        self.start_fid_updated_at = file.updated_at
+
+    def display_file_list(self) -> str:
+        """显示文件列表"""
+        # 如果 start_fid 不为空，则过滤掉小于 start_fid 的文件
+        file_list = [file for file in self.detail().file_list if file.updated_at > self.start_fid_updated_at]
+        res_lst = [file.regex_result for file in file_list]
+        # 取前10个
+        # res_lst = res_lst[:limit]
+        # 0. 文件名 -> 正则处理后的文件名
+        return "\n".join(f"{i}. {result}" for i, result in enumerate(res_lst))
 
 
 class ShareDetailPayload(BaseModel):

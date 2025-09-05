@@ -35,7 +35,7 @@ qas = on_alconna(
         Args["shareurl?", str],
         Args["pattern_idx?", Literal["0", "1", "2", "3"]],
         Args["inner?", Literal["1", "0"]],
-        Args["add_startfid?", Literal["1", "0"]],
+        Args["startfid_idx?", int],
         Args["runweek?", str],
     ),
     permission=SUPERUSER,
@@ -57,8 +57,8 @@ async def _(
     shareurl: Match[str],
     taskname: Match[str],
     pattern_idx: Match[Literal["0", "1", "2", "3"]],
-    inner: Match[Literal["是", "否"]],
-    add_startfid: Match[Literal["是", "否"]],
+    inner: Match[Literal["1", "0"]],
+    startfid_idx: Match[int],
     runweek: Match[str],
 ):
     if shareurl.available:
@@ -69,8 +69,8 @@ async def _(
         qas.set_path_arg("pattern_idx", pattern_idx.result)
     if inner.available:
         qas.set_path_arg("inner", inner.result)
-    if add_startfid.available:
-        qas.set_path_arg("add_startfid", add_startfid.result)
+    if startfid_idx.available:
+        qas.set_path_arg("startfid_idx", startfid_idx.result)
     if runweek.available:
         qas.set_path_arg("runweek", runweek.result)
 
@@ -92,28 +92,26 @@ async def _(pattern_idx: Literal["0", "1", "2", "3"], task: TaskItem = Task()):
     task.set_pattern(idx)
     async with QASClient() as client:
         detail = await client.get_share_detail(task)
-        await qas.send(f"处理预览:\n{detail.display_file_list()}")
+        task.detail_info = detail
+        await qas.send(f"处理预览:\n{task.display_file_list()}")
 
 
 @qas.got_path("inner", "是(1)否(0)以二级目录作为视频文件夹")
 async def _(inner: Literal["1", "0"], task: TaskItem = Task()):
     async with QASClient() as client:
-        detail = await client.get_share_detail(task)
         if inner == "1":
-            task.shareurl = f"{task.shareurl}#/list/share/{detail.share.first_fid}"
+            task.shareurl = f"{task.shareurl}#/list/share/{task.detail().share.first_fid}"
         else:
             task.shareurl = task.shareurl
         detail = await client.get_share_detail(task)
-        await qas.send(f"处理预览:\n{detail.display_file_list()}")
+        task.detail_info = detail
+        await qas.send(f"处理预览:\n{task.display_file_list()}")
 
 
-@qas.got_path("add_startfid", prompt="是(1)否(0)添加起始文件ID")
-async def _(add_startfid: Literal["1", "0"], task: TaskItem = Task()):
-    if add_startfid == "1":
-        async with QASClient() as client:
-            detail = await client.get_share_detail(task)
-            task.startfid = detail.last_update_file_fid
-        await qas.send(f"处理预览:\n{detail.display_file_list(task.startfid)}")
+@qas.got_path("startfid_idx", prompt="请输入起始文件索引(注: 只会转存更新时间在起始文件之后的文件)")
+async def _(startfid_idx: int, task: TaskItem = Task()):
+    task.set_startfid(startfid_idx)
+    await qas.send(f"处理预览:\n{task.display_file_list()}")
 
 
 @qas.got_path("runweek", "请输入运行周期(1-7), 如 67 代表每周六、日运行")
@@ -122,7 +120,7 @@ async def _(runweek: str, task: TaskItem = Task()):
     if matched := re.match(pattern, runweek):
         task.runweek = cast(list[Literal[1, 2, 3, 4, 5, 6, 7]], sorted({int(week) for week in matched.group(0)}))
     else:
-        await qas.reject_path("runweek")
+        await qas.reject_path("runweek", "请输入正确的运行周期")
 
 
 @qas.handle()
