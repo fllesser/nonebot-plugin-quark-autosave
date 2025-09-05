@@ -11,6 +11,9 @@ PYDANTIC_V2 = pydantic.__version__ >= "2.0.0"
 
 T = TypeVar("T", bound=BaseModel)
 
+PatternIdx: TypeAlias = Literal[0, 1, 2, 3]
+RunWeek: TypeAlias = list[Literal[1, 2, 3, 4, 5, 6, 7]]
+
 
 class QASResult(BaseModel, Generic[T]):
     success: bool
@@ -166,9 +169,6 @@ class MagicRegexItem(BaseModel):
     replace: str
 
 
-PatternIdx: TypeAlias = Literal[0, 1, 2, 3]
-
-
 class MagicRegex(BaseModel):
     tv_regex: MagicRegexItem = Field(
         alias="$TV_REGEX",
@@ -269,7 +269,7 @@ class TaskItem(BaseModel):
     enddate: str = ""
     addition: Addition | None = None
     ignore_extension: bool = False
-    runweek: list[Literal[1, 2, 3, 4, 5, 6, 7]] = [5, 6, 7]
+    runweek: RunWeek = [5, 6, 7]
     startfid: str | None = None
 
     detail_info: DetailInfo | None = Field(default=None, exclude=True)

@@ -10,11 +10,11 @@ from nonebot.typing import T_State
 require("nonebot_plugin_alconna")
 from .client import QASClient
 from .config import Config
-from .entity import MagicRegex, PatternIdx, TaskItem
+from .entity import MagicRegex, PatternIdx, RunWeek, TaskItem
 
 __plugin_meta__ = PluginMetadata(
     name="Quark Auto Save",
-    description="配合 quark-auto-save, 快速添加自动保存任务",
+    description="配合 quark-auto-save(https://github.com/Cp0204/quark-auto-save), 快速添加自动保存任务",
     usage="qas",
     type="application",  # library
     homepage="https://github.com/fllesser/nonebot-plugin-quark-autosave",
@@ -45,11 +45,10 @@ TASK_KEY = "QUARK_AUTO_SAVE_TASK"
 
 
 def Task() -> TaskItem:
+    def _get_task(state: T_State) -> TaskItem:
+        return state[TASK_KEY]
+
     return Depends(_get_task)
-
-
-def _get_task(state: T_State) -> TaskItem:
-    return state[TASK_KEY]
 
 
 @qas.handle()
@@ -93,32 +92,30 @@ async def _(pattern_idx: Literal["0", "1", "2", "3"], task: TaskItem = Task()):
     async with QASClient() as client:
         detail = await client.get_share_detail(task)
         task.detail_info = detail
-        await qas.send(f"处理预览:\n{task.display_file_list()}")
+        await qas.send(f"转存预览:\n{task.display_file_list()}")
 
 
 @qas.got_path("inner", "是(1)否(0)以二级目录作为视频文件夹")
 async def _(inner: Literal["1", "0"], task: TaskItem = Task()):
+    if inner == "1":
+        task.shareurl = f"{task.shareurl}#/list/share/{task.detail().share.first_fid}"
+
     async with QASClient() as client:
-        if inner == "1":
-            task.shareurl = f"{task.shareurl}#/list/share/{task.detail().share.first_fid}"
-        else:
-            task.shareurl = task.shareurl
         detail = await client.get_share_detail(task)
         task.detail_info = detail
-        await qas.send(f"处理预览:\n{task.display_file_list()}")
+        await qas.send(f"转存预览:\n{task.display_file_list()}")
 
 
 @qas.got_path("startfid_idx", prompt="请输入起始文件索引(注: 只会转存更新时间在起始文件之后的文件)")
 async def _(startfid_idx: int, task: TaskItem = Task()):
     task.set_startfid(startfid_idx)
-    await qas.send(f"处理预览:\n{task.display_file_list()}")
+    await qas.send(f"转存预览:\n{task.display_file_list()}")
 
 
 @qas.got_path("runweek", "请输入运行周期(1-7), 如 67 代表每周六、日运行")
 async def _(runweek: str, task: TaskItem = Task()):
-    pattern = r"^[1-7]*$"
-    if matched := re.match(pattern, runweek):
-        task.runweek = cast(list[Literal[1, 2, 3, 4, 5, 6, 7]], sorted({int(week) for week in matched.group(0)}))
+    if matched := re.match(r"^[1-7]*$", runweek):
+        task.runweek = cast(RunWeek, sorted({int(week) for week in matched.group(0)}))
     else:
         await qas.reject_path("runweek", "请输入正确的运行周期")
 

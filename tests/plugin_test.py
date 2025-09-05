@@ -11,7 +11,7 @@ def make_onebot_event(message: Message) -> GroupMessageEvent:
 
     message_id = randint(1000000000, 9999999999)
     user_id = randint(1000000000, 9999999999)
-    group_id = randint(1000000000, 9999999999)
+    group_id = 123456789
 
     event = GroupMessageEvent(
         time=int(time()),
