@@ -33,7 +33,7 @@ qas = on_alconna(
         "qas",
         Args["taskname?", str],
         Args["shareurl?", str],
-        Args["pattern_idx?", Literal["0", "1", "2", "3"]],
+        Args["pattern_idx?", Literal["0", "1", "2", "3", "4"]],
         Args["inner?", Literal["1", "0"]],
         Args["startfid_idx?", int],
         Args["runweek?", str],
@@ -85,8 +85,8 @@ async def _(shareurl: str, state: T_State):
     state[TASK_KEY] = TaskItem.template(state["taskname"], shareurl)
 
 
-@qas.got_path("pattern_idx", f"请输入模式索引: \n{MagicRegex.patterns_alias_str()}")
-async def _(pattern_idx: Literal["0", "1", "2", "3"], task: TaskItem = Task()):
+@qas.got_path("pattern_idx", f"请输入模式索引: \n{MagicRegex.display_patterns_alias()}")
+async def _(pattern_idx: Literal["0", "1", "2", "3", "4"], task: TaskItem = Task()):
     idx: PatternIdx = cast(PatternIdx, int(pattern_idx))
     task.set_pattern(idx)
     async with QASClient() as client:

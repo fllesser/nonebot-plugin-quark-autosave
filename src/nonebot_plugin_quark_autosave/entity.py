@@ -11,7 +11,7 @@ PYDANTIC_V2 = pydantic.__version__ >= "2.0.0"
 
 T = TypeVar("T", bound=BaseModel)
 
-PatternIdx: TypeAlias = Literal[0, 1, 2, 3]
+PatternIdx: TypeAlias = Literal[0, 1, 2, 3, 4]
 RunWeek: TypeAlias = list[Literal[1, 2, 3, 4, 5, 6, 7]]
 
 
@@ -170,6 +170,7 @@ class MagicRegexItem(BaseModel):
 
 
 class MagicRegex(BaseModel):
+    keep_original_name: str = Field(default="", exclude=True)
     tv_regex: MagicRegexItem = Field(
         alias="$TV_REGEX",
         default=MagicRegexItem(
@@ -197,23 +198,9 @@ class MagicRegex(BaseModel):
     )
 
     @classmethod
-    def patterns(cls) -> list[str]:
-        patterns = MagicRegex()
-        return [
-            patterns.tv_regex.pattern,
-            patterns.black_word.pattern,
-            patterns.show_magic.pattern,
-            patterns.tv_magic.pattern,
-        ]
-
-    @classmethod
-    def patterns_str(cls) -> str:
-        # 加上索引
-        return "\n".join(f"{i}. {pattern}" for i, pattern in enumerate(cls.patterns()))
-
-    @classmethod
     def patterns_alias(cls) -> list[str]:
         return [
+            "",
             "$TV_REGEX",
             "$BLACK_WORD",
             "$SHOW_MAGIC",
@@ -221,22 +208,14 @@ class MagicRegex(BaseModel):
         ]
 
     @classmethod
-    def patterns_alias_str(cls) -> str:
+    def display_patterns_alias(cls) -> str:
         """显示模式索引和别名"""
-        return "\n".join(f" - {i}. {alias}" for i, alias in enumerate(cls.patterns_alias()))
+        return "\n".join(f" - {i}. {alias or '以原始媒体名称转存'}" for i, alias in enumerate(cls.patterns_alias()))
 
     @classmethod
     def get_pattern_alias(cls, pattern_idx: PatternIdx) -> str:
         """根据模式索引获取模式别名"""
-        match pattern_idx:
-            case 0:
-                return "$TV_REGEX"
-            case 1:
-                return "$BLACK_WORD"
-            case 2:
-                return "$SHOW_MAGIC"
-            case 3:
-                return "$TV_MAGIC"
+        return cls.patterns_alias()[pattern_idx]
 
 
 class Addition(BaseModel):
