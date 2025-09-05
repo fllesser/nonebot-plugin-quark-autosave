@@ -14,31 +14,34 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-  "nonebot2[fastapi]>=2.4.2,<3.0.0",
+  "nonebot2[fastapi, httpx, websockets]>=2.4.2,<3.0.0",
   "ruff>=0.12.12,<1.0.0",
   "nonemoji>=0.1.4,<1.0.0",
   "pre-commit>=4.3.0",
 ]
 
 test = [
-  "nonebot2[fastapi]>=2.4.2,<3.0.0",
-  "nonebot-adapter-onebot>=2.4.6,<3.0.0",
+  "nonebot2[fastapi, httpx, websockets]>=2.4.2,<3.0.0",
   "nonebug>=0.3.7,<1.0.0",
   "pytest-xdist>=3.8.0,<4.0.0",
   "pytest-asyncio>=1.1.0,<1.2.0",
 ]
 
+adapters = ["nonebot-adapter-telegram>=0.1.0b20", "nonebot-adapter-onebot>=2.4.6,<3.0.0"]
+
 pydantic-v1 = ["pydantic>=1.10.0,<2.0.0"]
-pydantic-v2 = ["pydantic>=2.0.0,<3.0.0"]
+pydantic-v2 = ["pydantic>2.0.0,<3.0.0"]
+
 
 [tool.uv]
 required-version = ">=0.8.14"
-default-groups = ["test", "dev"]
-conflicts = [[{ group = "pydantic-v1" }, { group = "pydantic-v2" }]]
+default-groups = ["test", "dev", "adapters"]
+conflicts = [[{ group = "pydantic-v1" }, { group = "pydantic-v2" }, { group = "adapters" }]]
 
 [tool.nonebot]
 adapters = [
   { name = "Onebot v11", module_name = "nonebot.adapters.onebot.v11" },
+  { name = "Telegram", module_name = "nonebot.adapters.telegram" },
 ]
 plugins = ["nonebot_plugin_quark_autosave"]
 
