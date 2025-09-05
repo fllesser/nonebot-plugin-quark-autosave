@@ -38,4 +38,4 @@ jobs:
       run: uv sync --no-dev --group ${{ matrix.pydantic-version }}
 
     - name: Run all tests
-      run: uv run pytest
+      run: uv run --no-dev --group ${{ matrix.pydantic-version }} pytest
