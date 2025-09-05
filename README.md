@@ -24,7 +24,7 @@
 
 ## 📖 介绍
 
-配合 quark-auto-save(https://github.com/Cp0204/quark-auto-save), 快速添加自动保存任务
+配合 [quark-auto-save](https://github.com/Cp0204/quark-auto-save) 使用, 快速添加 quark 自动转存任务
 
 ## 💿 安装
 
