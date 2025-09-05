@@ -35,7 +35,7 @@ jobs:
         version: 'latest'
     
     - name: Install Dependencies for test group
-      run: uv sync --no-dev --group ${matrix.pydantic-version}
+      run: uv sync --no-dev --group ${{ matrix.pydantic-version }}
 
     - name: Run all tests
       run: uv run pytest
