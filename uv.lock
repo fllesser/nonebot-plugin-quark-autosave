@@ -1,6 +1,10 @@
 version = 1
 revision = 3
 requires-python = ">=3.10"
+conflicts = [[
+    { package = "nonebot-plugin-quark-autosave", group = "pydantic-v1" },
+    { package = "nonebot-plugin-quark-autosave", group = "pydantic-v2" },
+]]
 
 [[package]]
 name = "annotated-types"
@@ -16,10 +20,10 @@ name = "anyio"
 version = "4.10.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "exceptiongroup", marker = "python_full_version < '3.11'" },
+    { name = "exceptiongroup", marker = "python_full_version < '3.11' or (extra == 'group-29-nonebot-plugin-quark-autosave-pydantic-v1' and extra == 'group-29-nonebot-plugin-quark-autosave-pydantic-v2')" },
     { name = "idna" },
     { name = "sniffio" },
-    { name = "typing-extensions", marker = "python_full_version < '3.13'" },
+    { name = "typing-extensions", marker = "python_full_version < '3.13' or (extra == 'group-29-nonebot-plugin-quark-autosave-pydantic-v1' and extra == 'group-29-nonebot-plugin-quark-autosave-pydantic-v2')" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/f1/b4/636b3b65173d3ce9a38ef5f0522789614e590dab6a8d505340a4efe4c567/anyio-4.10.0.tar.gz", hash = "sha256:3f3fae35c96039744587aa5b8371e7e8e603c0702999535961dd336026973ba6", size = 213252, upload-time = "2025-08-04T08:54:26.451Z" }
 wheels = [
@@ -70,7 +74,7 @@ name = "asgiref"
 version = "3.9.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "typing-extensions", marker = "python_full_version < '3.11'" },
+    { name = "typing-extensions", marker = "python_full_version < '3.11' or (extra == 'group-29-nonebot-plugin-quark-autosave-pydantic-v1' and extra == 'group-29-nonebot-plugin-quark-autosave-pydantic-v2')" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/90/61/0aa957eec22ff70b830b22ff91f825e70e1ef732c06666a805730f28b36b/asgiref-3.9.1.tar.gz", hash = "sha256:a5ab6582236218e5ef1648f242fd9f10626cfd4de8dc377db215d5d5098e3142", size = 36870, upload-time = "2025-07-08T09:07:43.344Z" }
 wheels = [
@@ -94,35 +98,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/8e/ff/70dca7d7cb1cbc0edb2c6cc0c38b65cba36cccc491eca64cabd5fe7f8670/backports_asyncio_runner-1.2.0.tar.gz", hash = "sha256:a5aa7b2b7d8f8bfcaa2b57313f70792df84e32a2a746f585213373f900b42162", size = 69893, upload-time = "2025-07-02T02:27:15.685Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/a0/59/76ab57e3fe74484f48a53f8e337171b4a2349e506eabe136d7e01d059086/backports_asyncio_runner-1.2.0-py3-none-any.whl", hash = "sha256:0da0a936a8aeb554eccb426dc55af3ba63bcdc69fa1a600b5bb305413a4477b5", size = 12313, upload-time = "2025-07-02T02:27:14.263Z" },
-]
-
-[[package]]
-name = "bracex"
-version = "2.6"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/63/9a/fec38644694abfaaeca2798b58e276a8e61de49e2e37494ace423395febc/bracex-2.6.tar.gz", hash = "sha256:98f1347cd77e22ee8d967a30ad4e310b233f7754dbf31ff3fceb76145ba47dc7", size = 26642, upload-time = "2025-06-22T19:12:31.254Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/9d/2a/9186535ce58db529927f6cf5990a849aa9e052eea3e2cfefe20b9e1802da/bracex-2.6-py3-none-any.whl", hash = "sha256:0b0049264e7340b3ec782b5cb99beb325f36c3782a32e36e876452fd49a09952", size = 11508, upload-time = "2025-06-22T19:12:29.781Z" },
-]
-
-[[package]]
-name = "bump-my-version"
-version = "1.2.1"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "click" },
-    { name = "httpx" },
-    { name = "pydantic" },
-    { name = "pydantic-settings" },
-    { name = "questionary" },
-    { name = "rich" },
-    { name = "rich-click" },
-    { name = "tomlkit" },
-    { name = "wcmatch" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/d2/1c/2f26665d4be4f1b82b2dfe46f3bd7901582863ddf1bd597309b5d0a5e6d4/bump_my_version-1.2.1.tar.gz", hash = "sha256:96c48f880c149c299312f983d06b50e0277ffc566e64797bf3a6c240bce2dfcc", size = 1137281, upload-time = "2025-07-19T11:52:03.235Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/5c/f4/40db87f649d9104c5fe69706cc455e24481b90024b2aacb64cc0ef205536/bump_my_version-1.2.1-py3-none-any.whl", hash = "sha256:ddb41d5f30abdccce9d2dc873e880bdf04ec8c7e7237c73a4c893aa10b7d7587", size = 59567, upload-time = "2025-07-19T11:52:01.343Z" },
 ]
 
 [[package]]
@@ -212,7 +187,7 @@ name = "click"
 version = "8.2.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "colorama", marker = "sys_platform == 'win32'" },
+    { name = "colorama", marker = "sys_platform == 'win32' or (extra == 'group-29-nonebot-plugin-quark-autosave-pydantic-v1' and extra == 'group-29-nonebot-plugin-quark-autosave-pydantic-v2')" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/60/6c/8ca2efa64cf75a977a0d7fac081354553ebe483345c734fb6b6515d96bbc/click-8.2.1.tar.gz", hash = "sha256:27c491cc05d968d271d5a1db13e3b5a184636d9d930f148c50b038f0d0646202", size = 286342, upload-time = "2025-05-20T23:19:49.832Z" }
 wheels = [
@@ -242,7 +217,7 @@ name = "exceptiongroup"
 version = "1.3.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "typing-extensions", marker = "python_full_version < '3.13'" },
+    { name = "typing-extensions", marker = "python_full_version < '3.13' or (extra == 'group-29-nonebot-plugin-quark-autosave-pydantic-v1' and extra == 'group-29-nonebot-plugin-quark-autosave-pydantic-v2')" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/0b/9f/a65090624ecf468cdca03533906e7c69ed7588582240cfe7cc9e770b50eb/exceptiongroup-1.3.0.tar.gz", hash = "sha256:b241f5885f560bc56a59ee63ca4c6a8bfa46ae4ad651af316d4e81817bb9fd88", size = 29749, upload-time = "2025-05-10T17:42:51.123Z" }
 wheels = [
@@ -263,7 +238,8 @@ name = "fastapi"
 version = "0.116.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "pydantic" },
+    { name = "pydantic", version = "1.10.22", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'group-29-nonebot-plugin-quark-autosave-pydantic-v1'" },
+    { name = "pydantic", version = "2.11.7", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'group-29-nonebot-plugin-quark-autosave-pydantic-v2' or extra != 'group-29-nonebot-plugin-quark-autosave-pydantic-v1'" },
     { name = "starlette" },
     { name = "typing-extensions" },
 ]
@@ -398,33 +374,12 @@ name = "loguru"
 version = "0.7.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "colorama", marker = "sys_platform == 'win32'" },
-    { name = "win32-setctime", marker = "sys_platform == 'win32'" },
+    { name = "colorama", marker = "sys_platform == 'win32' or (extra == 'group-29-nonebot-plugin-quark-autosave-pydantic-v1' and extra == 'group-29-nonebot-plugin-quark-autosave-pydantic-v2')" },
+    { name = "win32-setctime", marker = "sys_platform == 'win32' or (extra == 'group-29-nonebot-plugin-quark-autosave-pydantic-v1' and extra == 'group-29-nonebot-plugin-quark-autosave-pydantic-v2')" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/3a/05/a1dae3dffd1116099471c643b8924f5aa6524411dc6c63fdae648c4f1aca/loguru-0.7.3.tar.gz", hash = "sha256:19480589e77d47b8d85b2c827ad95d49bf31b0dcde16593892eb51dd18706eb6", size = 63559, upload-time = "2024-12-06T11:20:56.608Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/0c/29/0348de65b8cc732daa3e33e67806420b2ae89bdce2b04af740289c5c6c8c/loguru-0.7.3-py3-none-any.whl", hash = "sha256:31a33c10c8e1e10422bfd431aeb5d351c7cf7fa671e3c4df004162264b28220c", size = 61595, upload-time = "2024-12-06T11:20:54.538Z" },
-]
-
-[[package]]
-name = "markdown-it-py"
-version = "4.0.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "mdurl" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/5b/f5/4ec618ed16cc4f8fb3b701563655a69816155e79e24a17b651541804721d/markdown_it_py-4.0.0.tar.gz", hash = "sha256:cb0a2b4aa34f932c007117b194e945bd74e0ec24133ceb5bac59009cda1cb9f3", size = 73070, upload-time = "2025-08-11T12:57:52.854Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/94/54/e7d793b573f298e1c9013b8c4dade17d481164aa517d1d7148619c2cedbf/markdown_it_py-4.0.0-py3-none-any.whl", hash = "sha256:87327c59b172c5011896038353a81343b6754500a08cd7a4973bb48c6d578147", size = 87321, upload-time = "2025-08-11T12:57:51.923Z" },
-]
-
-[[package]]
-name = "mdurl"
-version = "0.1.2"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/d6/54/cfe61301667036ec958cb99bd3efefba235e65cdeb9c84d24a8293ba1d90/mdurl-0.1.2.tar.gz", hash = "sha256:bb413d29f5eea38f31dd4754dd7377d4465116fb207585f97bf925588687c1ba", size = 8729, upload-time = "2022-08-14T12:40:10.846Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/b3/38/89ba8ad64ae25be8de66a6d463314cf1eb366222074cfda9ee839c56a4b4/mdurl-0.1.2-py3-none-any.whl", hash = "sha256:84008a41e51615a49fc9966191ff91509e3c40b939176e643fd50a5c2196b8f8", size = 9979, upload-time = "2022-08-14T12:40:09.779Z" },
 ]
 
 [[package]]
@@ -480,7 +435,7 @@ name = "multidict"
 version = "6.6.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "typing-extensions", marker = "python_full_version < '3.11'" },
+    { name = "typing-extensions", marker = "python_full_version < '3.11' or (extra == 'group-29-nonebot-plugin-quark-autosave-pydantic-v1' and extra == 'group-29-nonebot-plugin-quark-autosave-pydantic-v2')" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/69/7f/0652e6ed47ab288e3756ea9c0df8b14950781184d4bd7883f4d87dd41245/multidict-6.6.4.tar.gz", hash = "sha256:d2d4e4787672911b48350df02ed3fa3fffdc2f2e8ca06dd6afdf34189b76a9dd", size = 101843, upload-time = "2025-08-11T12:08:48.217Z" }
 wheels = [
@@ -606,7 +561,8 @@ source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "msgpack" },
     { name = "nonebot2" },
-    { name = "pydantic" },
+    { name = "pydantic", version = "1.10.22", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'group-29-nonebot-plugin-quark-autosave-pydantic-v1'" },
+    { name = "pydantic", version = "2.11.7", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'group-29-nonebot-plugin-quark-autosave-pydantic-v2' or extra != 'group-29-nonebot-plugin-quark-autosave-pydantic-v1'" },
     { name = "typing-extensions" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/11/97/504e898471c2ba18a5c0f8db99ed81e755f6b3cbf647ce804485d8b8f77e/nonebot_adapter_onebot-2.4.6.tar.gz", hash = "sha256:e33c93649ad11b320d8e9ff213635f29b23b4d0413c9158bd031c513c2f8f701", size = 40107, upload-time = "2024-10-24T07:34:57.623Z" }
@@ -639,7 +595,8 @@ source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "apscheduler" },
     { name = "nonebot2" },
-    { name = "pydantic" },
+    { name = "pydantic", version = "1.10.22", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'group-29-nonebot-plugin-quark-autosave-pydantic-v1'" },
+    { name = "pydantic", version = "2.11.7", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'group-29-nonebot-plugin-quark-autosave-pydantic-v2' or extra != 'group-29-nonebot-plugin-quark-autosave-pydantic-v1'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/d6/53/019bfea58c506c0166d8ef77959fd8676019469d0d3d8e135ae8f1a4b772/nonebot_plugin_apscheduler-0.5.0.tar.gz", hash = "sha256:6c0230e99765f275dc83d6639ff33bd6f71203fa10cd1b8a204b0f95530cda86", size = 3816, upload-time = "2024-06-28T13:17:10.57Z" }
 wheels = [
@@ -653,7 +610,8 @@ source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "nonebot2" },
     { name = "nonestorage" },
-    { name = "pydantic" },
+    { name = "pydantic", version = "1.10.22", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'group-29-nonebot-plugin-quark-autosave-pydantic-v1'" },
+    { name = "pydantic", version = "2.11.7", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'group-29-nonebot-plugin-quark-autosave-pydantic-v2' or extra != 'group-29-nonebot-plugin-quark-autosave-pydantic-v1'" },
     { name = "typing-extensions" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/63/22/67ec1e604c0385729bf2d71db406c032de9015363588785617113dfb76ac/nonebot_plugin_localstore-0.7.4.tar.gz", hash = "sha256:85ddc13814bfcd484ab311306823651390020bf44f4fb4733b343a58e72723ce", size = 5535, upload-time = "2025-03-01T12:54:04.077Z" }
@@ -676,11 +634,16 @@ dependencies = [
 
 [package.dev-dependencies]
 dev = [
-    { name = "bump-my-version" },
     { name = "nonebot2", extra = ["fastapi"] },
     { name = "nonemoji" },
     { name = "pre-commit" },
     { name = "ruff" },
+]
+pydantic-v1 = [
+    { name = "pydantic", version = "1.10.22", source = { registry = "https://pypi.org/simple" } },
+]
+pydantic-v2 = [
+    { name = "pydantic", version = "2.11.7", source = { registry = "https://pypi.org/simple" } },
 ]
 test = [
     { name = "nonebot-adapter-onebot" },
@@ -702,12 +665,13 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "bump-my-version", specifier = ">=1.2.1" },
     { name = "nonebot2", extras = ["fastapi"], specifier = ">=2.4.2,<3.0.0" },
     { name = "nonemoji", specifier = ">=0.1.4,<1.0.0" },
     { name = "pre-commit", specifier = ">=4.3.0" },
     { name = "ruff", specifier = ">=0.12.12,<1.0.0" },
 ]
+pydantic-v1 = [{ name = "pydantic", specifier = ">=1.10.0,<2.0.0" }]
+pydantic-v2 = [{ name = "pydantic", specifier = ">=2.0.0,!=2.5.0,!=2.5.1,!=2.10.0,!=2.10.1,<3.0.0" }]
 test = [
     { name = "nonebot-adapter-onebot", specifier = ">=2.4.6,<3.0.0" },
     { name = "nonebot2", extras = ["fastapi"], specifier = ">=2.4.2,<3.0.0" },
@@ -749,10 +713,11 @@ dependencies = [
     { name = "anyio" },
     { name = "exceptiongroup" },
     { name = "loguru" },
-    { name = "pydantic" },
+    { name = "pydantic", version = "1.10.22", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'group-29-nonebot-plugin-quark-autosave-pydantic-v1'" },
+    { name = "pydantic", version = "2.11.7", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'group-29-nonebot-plugin-quark-autosave-pydantic-v2' or extra != 'group-29-nonebot-plugin-quark-autosave-pydantic-v1'" },
     { name = "pygtrie" },
     { name = "python-dotenv" },
-    { name = "tomli", marker = "python_full_version < '3.11'" },
+    { name = "tomli", marker = "python_full_version < '3.11' or (extra == 'group-29-nonebot-plugin-quark-autosave-pydantic-v1' and extra == 'group-29-nonebot-plugin-quark-autosave-pydantic-v2')" },
     { name = "typing-extensions" },
     { name = "yarl" },
 ]
@@ -962,6 +927,46 @@ wheels = [
 
 [[package]]
 name = "pydantic"
+version = "1.10.22"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "typing-extensions", marker = "extra == 'group-29-nonebot-plugin-quark-autosave-pydantic-v1'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/9a/57/5996c63f0deec09e9e901a2b838247c97c6844999562eac4e435bcb83938/pydantic-1.10.22.tar.gz", hash = "sha256:ee1006cebd43a8e7158fb7190bb8f4e2da9649719bff65d0c287282ec38dec6d", size = 356771, upload-time = "2025-04-24T13:38:43.605Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/88/92/91eb5c75a1460292e1f2f3e577122574ebb942fbac19ad2369ff00b9eb24/pydantic-1.10.22-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:57889565ccc1e5b7b73343329bbe6198ebc472e3ee874af2fa1865cfe7048228", size = 2852481, upload-time = "2025-04-24T13:36:55.045Z" },
+    { url = "https://files.pythonhosted.org/packages/08/f3/dd54b49fc5caaed06f5a0d0a5ec35a81cf722cd6b42455f408dad1ef3f7d/pydantic-1.10.22-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:90729e22426de79bc6a3526b4c45ec4400caf0d4f10d7181ba7f12c01bb3897d", size = 2585586, upload-time = "2025-04-24T13:36:58.453Z" },
+    { url = "https://files.pythonhosted.org/packages/ec/9b/48d10180cc614ffb66da486e99bc1f8b639fb44edf322864f2fb161e2351/pydantic-1.10.22-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:8f8684d347f351554ec94fdcb507983d3116dc4577fb8799fed63c65869a2d10", size = 3336974, upload-time = "2025-04-24T13:37:00.652Z" },
+    { url = "https://files.pythonhosted.org/packages/ff/80/b55ad0029ae8e7b8b5c81ad7c4e800774a52107d26f70c6696857dc733d5/pydantic-1.10.22-cp310-cp310-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:c8dad498ceff2d9ef1d2e2bc6608f5b59b8e1ba2031759b22dfb8c16608e1802", size = 3362338, upload-time = "2025-04-24T13:37:02.42Z" },
+    { url = "https://files.pythonhosted.org/packages/65/e0/8a5cd2cd29a5632581ba466f5792194b2a568aa052ce9da9ba98b634debf/pydantic-1.10.22-cp310-cp310-musllinux_1_2_i686.whl", hash = "sha256:fac529cc654d4575cf8de191cce354b12ba705f528a0a5c654de6d01f76cd818", size = 3519505, upload-time = "2025-04-24T13:37:04.322Z" },
+    { url = "https://files.pythonhosted.org/packages/38/c5/c776d03ec374f22860802b2cee057b41e866be3c80826b53d4c001692db3/pydantic-1.10.22-cp310-cp310-musllinux_1_2_x86_64.whl", hash = "sha256:4148232aded8dd1dd13cf910a01b32a763c34bd79a0ab4d1ee66164fcb0b7b9d", size = 3485878, upload-time = "2025-04-24T13:37:06.102Z" },
+    { url = "https://files.pythonhosted.org/packages/d1/a2/1efd064513a2c1bcb5c2b0e022cdf77d132ef7f7f20d91bb439d759f6a88/pydantic-1.10.22-cp310-cp310-win_amd64.whl", hash = "sha256:ece68105d9e436db45d8650dc375c760cc85a6793ae019c08769052902dca7db", size = 2299673, upload-time = "2025-04-24T13:37:07.969Z" },
+    { url = "https://files.pythonhosted.org/packages/42/03/e435ed85a9abda29e3fbdb49c572fe4131a68c6daf3855a01eebda9e1b27/pydantic-1.10.22-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:8e530a8da353f791ad89e701c35787418605d35085f4bdda51b416946070e938", size = 2845682, upload-time = "2025-04-24T13:37:10.142Z" },
+    { url = "https://files.pythonhosted.org/packages/72/ea/4a625035672f6c06d3f1c7e33aa0af6bf1929991e27017e98b9c2064ae0b/pydantic-1.10.22-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:654322b85642e9439d7de4c83cb4084ddd513df7ff8706005dada43b34544946", size = 2553286, upload-time = "2025-04-24T13:37:11.946Z" },
+    { url = "https://files.pythonhosted.org/packages/a4/f0/424ad837746e69e9f061ba9be68c2a97aef7376d1911692904d8efbcd322/pydantic-1.10.22-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:a8bece75bd1b9fc1c32b57a32831517943b1159ba18b4ba32c0d431d76a120ae", size = 3141232, upload-time = "2025-04-24T13:37:14.394Z" },
+    { url = "https://files.pythonhosted.org/packages/14/67/4979c19e8cfd092085a292485e0b42d74e4eeefbb8cd726aa8ba38d06294/pydantic-1.10.22-cp311-cp311-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:eccb58767f13c6963dcf96d02cb8723ebb98b16692030803ac075d2439c07b0f", size = 3214272, upload-time = "2025-04-24T13:37:16.201Z" },
+    { url = "https://files.pythonhosted.org/packages/1a/04/32339ce43e97519d19e7759902515c750edbf4832a13063a4ab157f83f42/pydantic-1.10.22-cp311-cp311-musllinux_1_2_i686.whl", hash = "sha256:7778e6200ff8ed5f7052c1516617423d22517ad36cc7a3aedd51428168e3e5e8", size = 3321646, upload-time = "2025-04-24T13:37:19.086Z" },
+    { url = "https://files.pythonhosted.org/packages/92/35/dffc1b29cb7198aadab68d75447191e59bdbc1f1d2d51826c9a4460d372f/pydantic-1.10.22-cp311-cp311-musllinux_1_2_x86_64.whl", hash = "sha256:bffe02767d27c39af9ca7dc7cd479c00dda6346bb62ffc89e306f665108317a2", size = 3244258, upload-time = "2025-04-24T13:37:20.929Z" },
+    { url = "https://files.pythonhosted.org/packages/11/c5/c4ce6ebe7f528a879441eabd2c6dd9e2e4c54f320a8c9344ba93b3aa8701/pydantic-1.10.22-cp311-cp311-win_amd64.whl", hash = "sha256:23bc19c55427091b8e589bc08f635ab90005f2dc99518f1233386f46462c550a", size = 2309702, upload-time = "2025-04-24T13:37:23.296Z" },
+    { url = "https://files.pythonhosted.org/packages/f6/a3/ec66239ed7c9e90edfb85b23b6b18eb290ed7aa05f54837cdcb6a14faa98/pydantic-1.10.22-cp312-cp312-macosx_10_13_x86_64.whl", hash = "sha256:92d0f97828a075a71d9efc65cf75db5f149b4d79a38c89648a63d2932894d8c9", size = 2794865, upload-time = "2025-04-24T13:37:25.087Z" },
+    { url = "https://files.pythonhosted.org/packages/49/6a/99cf3fee612d93210c85f45a161e98c1c5b45b6dcadb21c9f1f838fa9e28/pydantic-1.10.22-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:6af5a2811b6b95b58b829aeac5996d465a5f0c7ed84bd871d603cf8646edf6ff", size = 2534212, upload-time = "2025-04-24T13:37:26.848Z" },
+    { url = "https://files.pythonhosted.org/packages/f1/e6/0f8882775cd9a60b221103ee7d6a89e10eb5a892d877c398df0da7140704/pydantic-1.10.22-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:6cf06d8d40993e79af0ab2102ef5da77b9ddba51248e4cb27f9f3f591fbb096e", size = 2994027, upload-time = "2025-04-24T13:37:28.683Z" },
+    { url = "https://files.pythonhosted.org/packages/e7/a3/f20fdecbaa2a2721a6a8ee9e4f344d1f72bd7d56e679371c3f2be15eb8c8/pydantic-1.10.22-cp312-cp312-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:184b7865b171a6057ad97f4a17fbac81cec29bd103e996e7add3d16b0d95f609", size = 3036716, upload-time = "2025-04-24T13:37:30.547Z" },
+    { url = "https://files.pythonhosted.org/packages/1f/83/dab34436d830c38706685acc77219fc2a209fea2a2301a1b05a2865b28bf/pydantic-1.10.22-cp312-cp312-musllinux_1_2_i686.whl", hash = "sha256:923ad861677ab09d89be35d36111156063a7ebb44322cdb7b49266e1adaba4bb", size = 3171801, upload-time = "2025-04-24T13:37:32.474Z" },
+    { url = "https://files.pythonhosted.org/packages/1e/6e/b64deccb8a7304d584088972437ea3091e9d99d27a8e7bf2bd08e29ae84e/pydantic-1.10.22-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:82d9a3da1686443fb854c8d2ab9a473251f8f4cdd11b125522efb4d7c646e7bc", size = 3123560, upload-time = "2025-04-24T13:37:34.855Z" },
+    { url = "https://files.pythonhosted.org/packages/08/9a/90d1ab704329a7ae8666354be84b5327d655764003974364767c9d307d3a/pydantic-1.10.22-cp312-cp312-win_amd64.whl", hash = "sha256:1612604929af4c602694a7f3338b18039d402eb5ddfbf0db44f1ebfaf07f93e7", size = 2191378, upload-time = "2025-04-24T13:37:36.649Z" },
+    { url = "https://files.pythonhosted.org/packages/47/8f/67befe3607b342dd6eb80237134ebcc6e8db42138609306eaf2b30e1f273/pydantic-1.10.22-cp313-cp313-macosx_10_13_x86_64.whl", hash = "sha256:b259dc89c9abcd24bf42f31951fb46c62e904ccf4316393f317abeeecda39978", size = 2797042, upload-time = "2025-04-24T13:37:38.753Z" },
+    { url = "https://files.pythonhosted.org/packages/aa/91/bfde7d301f8e1c4cff949b3f1eb2c9b27bdd4b2368da0fe88e7350bbe4bc/pydantic-1.10.22-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:9238aa0964d80c0908d2f385e981add58faead4412ca80ef0fa352094c24e46d", size = 2538572, upload-time = "2025-04-24T13:37:41.653Z" },
+    { url = "https://files.pythonhosted.org/packages/d7/ce/1b0097ece420354df77d2f01c72278fb43770c8ed732d6b7a303c0c70875/pydantic-1.10.22-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:6f8029f05b04080e3f1a550575a1bca747c0ea4be48e2d551473d47fd768fc1b", size = 2986271, upload-time = "2025-04-24T13:37:43.551Z" },
+    { url = "https://files.pythonhosted.org/packages/eb/4c/e257edfd5a0025a428aee7a2835e21b51c76a6b1c8994bcccb14d5721eea/pydantic-1.10.22-cp313-cp313-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:5c06918894f119e0431a36c9393bc7cceeb34d1feeb66670ef9b9ca48c073937", size = 3015617, upload-time = "2025-04-24T13:37:45.466Z" },
+    { url = "https://files.pythonhosted.org/packages/00/17/ecf46ff31fd62d382424a07ed60540d4479094204bebeebb6dea597e88c3/pydantic-1.10.22-cp313-cp313-musllinux_1_2_i686.whl", hash = "sha256:e205311649622ee8fc1ec9089bd2076823797f5cd2c1e3182dc0e12aab835b35", size = 3164222, upload-time = "2025-04-24T13:37:47.35Z" },
+    { url = "https://files.pythonhosted.org/packages/1a/47/2d55ec452c9a87347234bbbc70df268e1f081154b1851f0db89638558a1c/pydantic-1.10.22-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "sha256:815f0a73d5688d6dd0796a7edb9eca7071bfef961a7b33f91e618822ae7345b7", size = 3117572, upload-time = "2025-04-24T13:37:49.339Z" },
+    { url = "https://files.pythonhosted.org/packages/03/2f/30359a36245b029bec7e442dd780fc242c66e66ad7dd5b50af2dcfd41ff3/pydantic-1.10.22-cp313-cp313-win_amd64.whl", hash = "sha256:9dfce71d42a5cde10e78a469e3d986f656afc245ab1b97c7106036f088dd91f8", size = 2174666, upload-time = "2025-04-24T13:37:51.114Z" },
+    { url = "https://files.pythonhosted.org/packages/e9/e0/1ed151a56869be1588ad2d8cda9f8c1d95b16f74f09a7cea879ca9b63a8b/pydantic-1.10.22-py3-none-any.whl", hash = "sha256:343037d608bcbd34df937ac259708bfc83664dadf88afe8516c4f282d7d471a9", size = 166503, upload-time = "2025-04-24T13:38:41.374Z" },
+]
+
+[[package]]
+name = "pydantic"
 version = "2.11.7"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
@@ -1063,20 +1068,6 @@ wheels = [
 ]
 
 [[package]]
-name = "pydantic-settings"
-version = "2.10.1"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "pydantic" },
-    { name = "python-dotenv" },
-    { name = "typing-inspection" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/68/85/1ea668bbab3c50071ca613c6ab30047fb36ab0da1b92fa8f17bbc38fd36c/pydantic_settings-2.10.1.tar.gz", hash = "sha256:06f0062169818d0f5524420a360d632d5857b83cffd4d42fe29597807a1614ee", size = 172583, upload-time = "2025-06-24T13:26:46.841Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/58/f0/427018098906416f580e3cf1366d3b1abfb408a0652e9f31600c24a1903c/pydantic_settings-2.10.1-py3-none-any.whl", hash = "sha256:a60952460b99cf661dc25c29c0ef171721f98bfcb52ef8d9ea4c943d7c8cc796", size = 45235, upload-time = "2025-06-24T13:26:45.485Z" },
-]
-
-[[package]]
 name = "pygments"
 version = "2.19.2"
 source = { registry = "https://pypi.org/simple" }
@@ -1099,13 +1090,13 @@ name = "pytest"
 version = "8.4.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "colorama", marker = "sys_platform == 'win32'" },
-    { name = "exceptiongroup", marker = "python_full_version < '3.11'" },
+    { name = "colorama", marker = "sys_platform == 'win32' or (extra == 'group-29-nonebot-plugin-quark-autosave-pydantic-v1' and extra == 'group-29-nonebot-plugin-quark-autosave-pydantic-v2')" },
+    { name = "exceptiongroup", marker = "python_full_version < '3.11' or (extra == 'group-29-nonebot-plugin-quark-autosave-pydantic-v1' and extra == 'group-29-nonebot-plugin-quark-autosave-pydantic-v2')" },
     { name = "iniconfig" },
     { name = "packaging" },
     { name = "pluggy" },
     { name = "pygments" },
-    { name = "tomli", marker = "python_full_version < '3.11'" },
+    { name = "tomli", marker = "python_full_version < '3.11' or (extra == 'group-29-nonebot-plugin-quark-autosave-pydantic-v1' and extra == 'group-29-nonebot-plugin-quark-autosave-pydantic-v2')" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/a3/5c/00a0e072241553e1a7496d638deababa67c5058571567b92a7eaa258397c/pytest-8.4.2.tar.gz", hash = "sha256:86c0d0b93306b961d58d62a4db4879f27fe25513d4b969df351abdddb3c30e01", size = 1519618, upload-time = "2025-09-04T14:34:22.711Z" }
 wheels = [
@@ -1117,7 +1108,7 @@ name = "pytest-asyncio"
 version = "1.1.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "backports-asyncio-runner", marker = "python_full_version < '3.11'" },
+    { name = "backports-asyncio-runner", marker = "python_full_version < '3.11' or (extra == 'group-29-nonebot-plugin-quark-autosave-pydantic-v1' and extra == 'group-29-nonebot-plugin-quark-autosave-pydantic-v2')" },
     { name = "pytest" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/4e/51/f8794af39eeb870e87a8c8068642fc07bce0c854d6865d7dd0f2a9d338c2/pytest_asyncio-1.1.0.tar.gz", hash = "sha256:796aa822981e01b68c12e4827b8697108f7205020f24b5793b3c41555dab68ea", size = 46652, upload-time = "2025-07-16T04:29:26.393Z" }
@@ -1192,18 +1183,6 @@ wheels = [
 ]
 
 [[package]]
-name = "questionary"
-version = "2.1.1"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "prompt-toolkit" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/f6/45/eafb0bba0f9988f6a2520f9ca2df2c82ddfa8d67c95d6625452e97b204a5/questionary-2.1.1.tar.gz", hash = "sha256:3d7e980292bb0107abaa79c68dd3eee3c561b83a0f89ae482860b181c8bd412d", size = 25845, upload-time = "2025-08-28T19:00:20.851Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/3c/26/1062c7ec1b053db9e499b4d2d5bc231743201b74051c973dadeac80a8f43/questionary-2.1.1-py3-none-any.whl", hash = "sha256:a51af13f345f1cdea62347589fbb6df3b290306ab8930713bfae4d475a7d4a59", size = 36753, upload-time = "2025-08-28T19:00:19.56Z" },
-]
-
-[[package]]
 name = "requests"
 version = "2.32.5"
 source = { registry = "https://pypi.org/simple" }
@@ -1216,33 +1195,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/c9/74/b3ff8e6c8446842c3f5c837e9c3dfcfe2018ea6ecef224c710c85ef728f4/requests-2.32.5.tar.gz", hash = "sha256:dbba0bac56e100853db0ea71b82b4dfd5fe2bf6d3754a8893c3af500cec7d7cf", size = 134517, upload-time = "2025-08-18T20:46:02.573Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/1e/db/4254e3eabe8020b458f1a747140d32277ec7a271daf1d235b70dc0b4e6e3/requests-2.32.5-py3-none-any.whl", hash = "sha256:2462f94637a34fd532264295e186976db0f5d453d1cdd31473c85a6a161affb6", size = 64738, upload-time = "2025-08-18T20:46:00.542Z" },
-]
-
-[[package]]
-name = "rich"
-version = "14.1.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "markdown-it-py" },
-    { name = "pygments" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/fe/75/af448d8e52bf1d8fa6a9d089ca6c07ff4453d86c65c145d0a300bb073b9b/rich-14.1.0.tar.gz", hash = "sha256:e497a48b844b0320d45007cdebfeaeed8db2a4f4bcf49f15e455cfc4af11eaa8", size = 224441, upload-time = "2025-07-25T07:32:58.125Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/e3/30/3c4d035596d3cf444529e0b2953ad0466f6049528a879d27534700580395/rich-14.1.0-py3-none-any.whl", hash = "sha256:536f5f1785986d6dbdea3c75205c473f970777b4a0d6c6dd1b696aa05a3fa04f", size = 243368, upload-time = "2025-07-25T07:32:56.73Z" },
-]
-
-[[package]]
-name = "rich-click"
-version = "1.8.9"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "click" },
-    { name = "rich" },
-    { name = "typing-extensions" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/b7/a8/dcc0a8ec9e91d76ecad9413a84b6d3a3310c6111cfe012d75ed385c78d96/rich_click-1.8.9.tar.gz", hash = "sha256:fd98c0ab9ddc1cf9c0b7463f68daf28b4d0033a74214ceb02f761b3ff2af3136", size = 39378, upload-time = "2025-05-19T21:33:05.569Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/b6/c2/9fce4c8a9587c4e90500114d742fe8ef0fd92d7bad29d136bb9941add271/rich_click-1.8.9-py3-none-any.whl", hash = "sha256:c3fa81ed8a671a10de65a9e20abf642cfdac6fdb882db1ef465ee33919fbcfe2", size = 36082, upload-time = "2025-05-19T21:33:04.195Z" },
 ]
 
 [[package]]
@@ -1286,7 +1238,7 @@ version = "0.47.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anyio" },
-    { name = "typing-extensions", marker = "python_full_version < '3.13'" },
+    { name = "typing-extensions", marker = "python_full_version < '3.13' or (extra == 'group-29-nonebot-plugin-quark-autosave-pydantic-v1' and extra == 'group-29-nonebot-plugin-quark-autosave-pydantic-v2')" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/15/b9/cc3017f9a9c9b6e27c5106cc10cc7904653c3eec0729793aec10479dd669/starlette-0.47.3.tar.gz", hash = "sha256:6bc94f839cc176c4858894f1f8908f0ab79dfec1a6b8402f6da9be26ebea52e9", size = 2584144, upload-time = "2025-08-24T13:36:42.122Z" }
 wheels = [
@@ -1405,15 +1357,6 @@ wheels = [
 ]
 
 [[package]]
-name = "tomlkit"
-version = "0.13.3"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/cc/18/0bbf3884e9eaa38819ebe46a7bd25dcd56b67434402b66a58c4b8e552575/tomlkit-0.13.3.tar.gz", hash = "sha256:430cf247ee57df2b94ee3fbe588e71d362a941ebb545dec29b53961d61add2a1", size = 185207, upload-time = "2025-06-05T07:13:44.947Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/bd/75/8539d011f6be8e29f339c42e633aae3cb73bffa95dd0f9adec09b9c58e85/tomlkit-0.13.3-py3-none-any.whl", hash = "sha256:c89c649d79ee40629a9fda55f8ace8c6a1b42deb912b2a8fd8d942ddadb606b0", size = 38901, upload-time = "2025-06-05T07:13:43.546Z" },
-]
-
-[[package]]
 name = "typing-extensions"
 version = "4.15.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1448,7 +1391,7 @@ name = "tzlocal"
 version = "5.3.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "tzdata", marker = "sys_platform == 'win32'" },
+    { name = "tzdata", marker = "sys_platform == 'win32' or (extra == 'group-29-nonebot-plugin-quark-autosave-pydantic-v1' and extra == 'group-29-nonebot-plugin-quark-autosave-pydantic-v2')" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/8b/2e/c14812d3d4d9cd1773c6be938f89e5735a1f11a9f184ac3639b93cef35d5/tzlocal-5.3.1.tar.gz", hash = "sha256:cceffc7edecefea1f595541dbd6e990cb1ea3d19bf01b2809f362a03dd7921fd", size = 30761, upload-time = "2025-03-05T21:17:41.549Z" }
 wheels = [
@@ -1471,7 +1414,7 @@ source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "click" },
     { name = "h11" },
-    { name = "typing-extensions", marker = "python_full_version < '3.11'" },
+    { name = "typing-extensions", marker = "python_full_version < '3.11' or (extra == 'group-29-nonebot-plugin-quark-autosave-pydantic-v1' and extra == 'group-29-nonebot-plugin-quark-autosave-pydantic-v2')" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/5e/42/e0e305207bb88c6b8d3061399c6a961ffe5fbb7e2aa63c9234df7259e9cd/uvicorn-0.35.0.tar.gz", hash = "sha256:bc662f087f7cf2ce11a1d7fd70b90c9f98ef2e2831556dd078d131b96cc94a01", size = 78473, upload-time = "2025-06-28T16:15:46.058Z" }
 wheels = [
@@ -1480,11 +1423,11 @@ wheels = [
 
 [package.optional-dependencies]
 standard = [
-    { name = "colorama", marker = "sys_platform == 'win32'" },
+    { name = "colorama", marker = "sys_platform == 'win32' or (extra == 'group-29-nonebot-plugin-quark-autosave-pydantic-v1' and extra == 'group-29-nonebot-plugin-quark-autosave-pydantic-v2')" },
     { name = "httptools" },
     { name = "python-dotenv" },
     { name = "pyyaml" },
-    { name = "uvloop", marker = "platform_python_implementation != 'PyPy' and sys_platform != 'cygwin' and sys_platform != 'win32'" },
+    { name = "uvloop", marker = "(platform_python_implementation != 'PyPy' and sys_platform != 'cygwin' and sys_platform != 'win32') or (platform_python_implementation == 'PyPy' and extra == 'group-29-nonebot-plugin-quark-autosave-pydantic-v1' and extra == 'group-29-nonebot-plugin-quark-autosave-pydantic-v2') or (sys_platform == 'cygwin' and extra == 'group-29-nonebot-plugin-quark-autosave-pydantic-v1' and extra == 'group-29-nonebot-plugin-quark-autosave-pydantic-v2') or (sys_platform == 'win32' and extra == 'group-29-nonebot-plugin-quark-autosave-pydantic-v1' and extra == 'group-29-nonebot-plugin-quark-autosave-pydantic-v2')" },
     { name = "watchfiles" },
     { name = "websockets" },
 ]
@@ -1529,7 +1472,7 @@ dependencies = [
     { name = "distlib" },
     { name = "filelock" },
     { name = "platformdirs" },
-    { name = "typing-extensions", marker = "python_full_version < '3.11'" },
+    { name = "typing-extensions", marker = "python_full_version < '3.11' or (extra == 'group-29-nonebot-plugin-quark-autosave-pydantic-v1' and extra == 'group-29-nonebot-plugin-quark-autosave-pydantic-v2')" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/1c/14/37fcdba2808a6c615681cd216fecae00413c9dab44fb2e57805ecf3eaee3/virtualenv-20.34.0.tar.gz", hash = "sha256:44815b2c9dee7ed86e387b842a84f20b93f7f417f95886ca1996a72a4138eb1a", size = 6003808, upload-time = "2025-08-13T14:24:07.464Z" }
 wheels = [
@@ -1634,18 +1577,6 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/f3/d3/71c2dcf81dc1edcf8af9f4d8d63b1316fb0a2dd90cbfd427e8d9dd584a90/watchfiles-1.1.0-pp311-pypy311_pp73-macosx_11_0_arm64.whl", hash = "sha256:51b81e55d40c4b4aa8658427a3ee7ea847c591ae9e8b81ef94a90b668999353c", size = 398816, upload-time = "2025-06-15T19:06:50.433Z" },
     { url = "https://files.pythonhosted.org/packages/b8/fa/12269467b2fc006f8fce4cd6c3acfa77491dd0777d2a747415f28ccc8c60/watchfiles-1.1.0-pp311-pypy311_pp73-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:f2bcdc54ea267fe72bfc7d83c041e4eb58d7d8dc6f578dfddb52f037ce62f432", size = 451584, upload-time = "2025-06-15T19:06:51.834Z" },
     { url = "https://files.pythonhosted.org/packages/bd/d3/254cea30f918f489db09d6a8435a7de7047f8cb68584477a515f160541d6/watchfiles-1.1.0-pp311-pypy311_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:923fec6e5461c42bd7e3fd5ec37492c6f3468be0499bc0707b4bbbc16ac21792", size = 454009, upload-time = "2025-06-15T19:06:52.896Z" },
-]
-
-[[package]]
-name = "wcmatch"
-version = "10.1"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "bracex" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/79/3e/c0bdc27cf06f4e47680bd5803a07cb3dfd17de84cde92dd217dcb9e05253/wcmatch-10.1.tar.gz", hash = "sha256:f11f94208c8c8484a16f4f48638a85d771d9513f4ab3f37595978801cb9465af", size = 117421, upload-time = "2025-06-22T19:14:02.49Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/eb/d8/0d1d2e9d3fabcf5d6840362adcf05f8cf3cd06a73358140c3a97189238ae/wcmatch-10.1-py3-none-any.whl", hash = "sha256:5848ace7dbb0476e5e55ab63c6bbd529745089343427caa5537f230cc01beb8a", size = 39854, upload-time = "2025-06-22T19:14:00.978Z" },
 ]
 
 [[package]]

@@ -1,4 +1,5 @@
 from typing import Literal
+from typing_extensions import deprecated
 
 import httpx
 from nonebot import logger
@@ -42,6 +43,8 @@ class QASClient:
         result = QASResult[TaskItem](**resp_json)
         return result.data_or_raise()
 
+    # 弃用
+    @deprecated("使用 add_task 代替")
     async def add_task_old(
         self,
         taskname: str,

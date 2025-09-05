@@ -5,7 +5,7 @@ from pydantic import BaseModel
 class Config(BaseModel):
     quark_autosave_endpoint: str = "http://127.0.0.1:5005"
     quark_autosave_token: str | None = None
-    quark_auto_save_path_base: str = "QuarkAutoSave"
+    quark_auto_save_path_base: str = "夸克自动转存"
 
 
 # 配置加载

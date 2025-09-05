@@ -12,7 +12,6 @@ PYDANTIC_V2 = pydantic.__version__ >= "2.0.0"
 T = TypeVar("T", bound=BaseModel)
 
 
-# type 泛化类型
 class QASResult(BaseModel, Generic[T]):
     success: bool
     data: T | None = None
@@ -316,19 +315,22 @@ class TaskItem(BaseModel):
     def set_startfid(self, startfid_idx: int):
         """设置起始文件"""
         assert self.detail_info is not None
-        file = self.detail_info.file_list[startfid_idx]
+        file_list = self.detail().file_list
+        # 取模防止数组越界
+        startfid_idx = startfid_idx % len(file_list)
+        file = file_list[startfid_idx]
         self.startfid = file.fid
         self.start_fid_updated_at = file.updated_at
 
     def display_file_list(self) -> str:
         """显示文件列表"""
         # 如果 start_fid 不为空，则过滤掉小于 start_fid 的文件
-        file_list = [file for file in self.detail().file_list if file.updated_at > self.start_fid_updated_at]
-        res_lst = [file.regex_result for file in file_list]
-        # 取前10个
-        # res_lst = res_lst[:limit]
-        # 0. 文件名 -> 正则处理后的文件名
-        return "\n".join(f"{i}. {result}" for i, result in enumerate(res_lst))
+        file_list = [file for file in self.detail().file_list if file.updated_at >= self.start_fid_updated_at]
+        res_lst = [f"{i}. {file.regex_result}" for i, file in enumerate(file_list)]
+        # 如果文件大于 15 个，取前 5 个，和后 5 个, 中间用 ... 代替
+        if len(res_lst) > 15:
+            res_lst = [*res_lst[:5], "...", *res_lst[-5:]]
+        return "\n".join(res_lst)
 
 
 class ShareDetailPayload(BaseModel):
