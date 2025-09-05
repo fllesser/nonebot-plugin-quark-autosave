@@ -1,31 +1,23 @@
 [project]
 name = "nonebot-plugin-quark-autosave"
 version = "0.1.0"
-description = "插件描述"
+description = "配合 quark-auto-save(https://github.com/Cp0204/quark-auto-save), 快速添加自动保存任务"
 readme = "README.md"
-authors = [{ name = "fllesser", email = "fllesser@gmail.com" }]
+authors = [{ name = "fllesser", email = "fllessive@gmail.com" }]
 urls = { Repository = "https://github.com/fllesser/nonebot-plugin-quark-autosave" }
 requires-python = ">=3.10"
 dependencies = [
   "nonebot2>=2.4.3,<3.0.0",
-
-  "nonebot-plugin-localstore>=0.7.4,<1.0.0",  # 存储文件
-  "nonebot-plugin-apscheduler>=0.5.0,<1.0.0", # 定时任务
-
-  "nonebot-plugin-uninfo>=0.9.0,<1.0.0",   # 多平台用户信息获取
   "nonebot-plugin-alconna>=0.59.4,<1.0.0", # 跨平台命令解析拓展
-  # "nonebot-adapter-onebot>=2.4.6,<3.0.0"
-
   "httpx>=0.27.0,<1.0.0",
 ]
 
 [dependency-groups]
 dev = [
   "nonebot2[fastapi]>=2.4.2,<3.0.0",
-  "ruff>=0.12.9,<1.0.0",
+  "ruff>=0.12.12,<1.0.0",
   "nonemoji>=0.1.4,<1.0.0",
   "pre-commit>=4.3.0",
-  "bump-my-version>=1.2.1",
 ]
 
 test = [
@@ -36,7 +28,18 @@ test = [
   "pytest-asyncio>=1.1.0,<1.2.0",
 ]
 
+pydantic-v1 = ["pydantic>=1.10.0,<2.0.0"]
+pydantic-v2 = ["pydantic>=2.0.0,<3.0.0"]
+
+[tool.uv]
+required-version = ">=0.8.14"
+default-groups = ["test", "dev"]
+conflicts = [[{ group = "pydantic-v1" }, { group = "pydantic-v2" }]]
+
 [tool.nonebot]
+adapters = [
+  { name = "Onebot v11", module_name = "nonebot.adapters.onebot.v11" },
+]
 plugins = ["nonebot_plugin_quark_autosave"]
 
 [tool.pytest.ini_options]
@@ -118,8 +121,9 @@ disableBytesTypePromotions = true
 
 
 [build-system]
-requires = ["uv_build>=0.8.0,<0.9.0"]
+requires = ["uv_build>=0.8.14,<0.9.0"]
 build-backend = "uv_build"
+
 
 [tool.bumpversion]
 current_version = "0.1.0"
