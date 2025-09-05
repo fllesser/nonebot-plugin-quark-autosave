@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Any, Generic, Literal, TypeAlias, TypeVar
 
 import pydantic
@@ -69,7 +70,21 @@ class Share(BaseModel):
 
 class FileItem(BaseModel):
     fid: str
+    # 文件名
+    file_name: str
     updated_at: int
+    # 正则处理后的文件名
+    file_name_re: str | None = None
+    # 已经保存到夸克网盘的文件名
+    file_name_saved: str | None = None
+
+    @property
+    def updated_at_str(self) -> str:
+        return datetime.fromtimestamp(self.updated_at).strftime("%Y-%m-%d %H:%M:%S")
+
+    @property
+    def regex_result(self) -> str:
+        return f"{self.file_name} -> {self.file_name_re or f'{self.file_name_saved} (已存盘)'}"
 
 
 class SharePath(BaseModel):
@@ -87,6 +102,24 @@ class DetailInfo(BaseModel):
     @property
     def last_update_file_fid(self) -> str:
         return max(self.file_list, key=lambda x: x.updated_at).fid
+
+    def display_file_list(self, start_fid: str | None = None, limit: int = 10) -> str:
+        """显示文件列表
+
+        Args:
+            limit (int, optional): 显示的文件数量. Defaults to 10.
+
+        Returns:
+            str: 文件列表
+        """
+        # 如果 start_fid 不为空，则过滤掉小于 start_fid 的文件
+        if start_fid:
+            self.file_list = [file for file in self.file_list if file.fid >= start_fid]
+        res_lst = [file.regex_result for file in self.file_list]
+        # 取前10个
+        res_lst = res_lst[:limit]
+        # 0. 文件名 -> 正则处理后的文件名
+        return "\n".join(f"{i}. {result}" for i, result in enumerate(res_lst))
 
 
 class AlistPlugin(BaseModel):
@@ -266,7 +299,7 @@ class TaskItem(BaseModel):
     pattern: str = Field(default="$TV_REGEX")
     replace: str = ""
     enddate: str = ""
-    addition: Addition = Field(default_factory=Addition)
+    addition: Addition | None = None
     ignore_extension: bool = False
     runweek: list[Literal[1, 2, 3, 4, 5, 6, 7]] = [5, 6, 7]
     startfid: str | None = None
@@ -286,7 +319,7 @@ class TaskItem(BaseModel):
         )
 
     @classmethod
-    def base_template(
+    def template(
         cls,
         taskname: str,
         shareurl: str,
@@ -297,16 +330,10 @@ class TaskItem(BaseModel):
             shareurl=shareurl,
             savepath=f"/{plugin_config.quark_auto_save_path_base}/{taskname}",
             pattern=MagicRegex.get_pattern_alias(pattern_idx),
-            replace="",
-            enddate="",
-            addition=Addition(),
-            ignore_extension=False,
-            runweek=[5, 6, 7],
         )
 
-    @classmethod
-    def common_template(cls, taskname: str, shareurl: str, pattern_idx: Literal[0, 1, 2, 3] = 0) -> "TaskItem":
-        return cls.base_template(taskname, shareurl, pattern_idx)
+    def set_pattern(self, pattern_idx: PatternIdx):
+        self.pattern = MagicRegex.get_pattern_alias(pattern_idx)
 
 
 class ShareDetailPayload(BaseModel):

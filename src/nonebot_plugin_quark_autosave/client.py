@@ -32,7 +32,17 @@ class QASClient:
     async def run_once(self):
         pass
 
-    async def add_task(
+    async def add_task(self, task: TaskItem):
+        response = await self.client.post("/api/add_task", json=model_dump(task))
+        logger.debug(f"添加任务: {response.text}")
+        resp_json = response.json()
+        logger.debug(f"添加任务: {resp_json}")
+        if response.status_code >= 500:
+            raise QuarkAutosaveException(f"服务端错误: {response.status_code}")
+        result = QASResult[TaskItem](**resp_json)
+        return result.data_or_raise()
+
+    async def add_task_old(
         self,
         taskname: str,
         shareurl: str,
@@ -50,18 +60,17 @@ class QASClient:
             inner (bool, optional): 是否下一级目录. Defaults to True.
         """
 
-        task = TaskItem.common_template(taskname, shareurl, pattern_idx)
+        task = TaskItem.template(taskname, shareurl, pattern_idx)
 
         detail = await self.get_share_detail(task)
-        if add_startfid:
-            if inner:
-                inner_url = f"{task.shareurl}#/list/share/{detail.share.first_fid}"
-                task = TaskItem.common_template(taskname=taskname, shareurl=inner_url)
-                inner_detail = await self.get_share_detail(task)
-                task.startfid = inner_detail.last_update_file_fid
 
-            else:
-                task.startfid = detail.last_update_file_fid
+        if inner:
+            inner_url = f"{task.shareurl}#/list/share/{detail.share.first_fid}"
+            task = TaskItem.template(taskname=taskname, shareurl=inner_url, pattern_idx=pattern_idx)
+            detail = await self.get_share_detail(task)
+
+        if add_startfid:
+            task.startfid = detail.last_update_file_fid
 
         task.runweek = runweek
 
@@ -74,12 +83,12 @@ class QASClient:
         return result.data_or_raise()
 
     async def create_task(self, taskname: str, shareurl: str):
-        task = TaskItem.common_template(taskname, shareurl)
+        task = TaskItem.template(taskname, shareurl)
 
         detail = await self.get_share_detail(task)
         # share_url + #/list/share/ + first_fid 暂时取第一个文件夹
         inner_url = f"{task.shareurl}#/list/share/{detail.share.first_fid}"
-        new_task = TaskItem.common_template(taskname, inner_url)
+        new_task = TaskItem.template(taskname, inner_url)
         inner_detail = await self.get_share_detail(new_task)
         # 取最后更新时间的文件 fid 作为 文件起始
         new_task.startfid = inner_detail.last_update_file_fid
@@ -103,7 +112,7 @@ class QASClient:
         if response.status_code >= 500:
             raise QuarkAutosaveException(f"服务端错误: {response.status_code}")
         resp_json = response.json()
-        # logger.debug(f"获取分享详情: {resp_json}")
+        logger.debug(f"获取分享详情: {resp_json}")
         result = QASResult[DetailInfo](**resp_json)
         return result.data_or_raise()
 

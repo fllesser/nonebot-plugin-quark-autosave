@@ -1,7 +1,8 @@
 import re
-from typing import Literal
+from typing import Literal, cast
 
 from nonebot import logger, require  # noqa: F401
+from nonebot.params import Depends
 from nonebot.permission import SUPERUSER
 from nonebot.plugin import PluginMetadata, inherit_supported_adapters
 from nonebot.typing import T_State
@@ -9,7 +10,7 @@ from nonebot.typing import T_State
 require("nonebot_plugin_alconna")
 from .client import QASClient
 from .config import Config
-from .entity import MagicRegex
+from .entity import MagicRegex, PatternIdx, TaskItem
 
 __plugin_meta__ = PluginMetadata(
     name="Quark Auto Save",
@@ -39,6 +40,16 @@ qas = on_alconna(
     ),
     permission=SUPERUSER,
 )
+
+TASK_KEY = "QUARK_AUTO_SAVE_TASK"
+
+
+def Task() -> TaskItem:
+    return Depends(_get_task)
+
+
+def _get_task(state: T_State) -> TaskItem:
+    return state[TASK_KEY]
 
 
 @qas.handle()
@@ -72,48 +83,50 @@ async def _(taskname: str, state: T_State):
 @qas.got_path("shareurl", "请输入分享链接")
 async def _(shareurl: str, state: T_State):
     state["shareurl"] = shareurl
+    state[TASK_KEY] = TaskItem.template(state["taskname"], shareurl)
 
 
 @qas.got_path("pattern_idx", f"请输入模式索引: \n{MagicRegex.patterns_alias_str()}")
-async def _(pattern_idx: Literal["0", "1", "2", "3"], state: T_State):
-    state["pattern_idx"] = int(pattern_idx)
+async def _(pattern_idx: Literal["0", "1", "2", "3"], task: TaskItem = Task()):
+    idx: PatternIdx = cast(PatternIdx, int(pattern_idx))
+    task.set_pattern(idx)
+    async with QASClient() as client:
+        detail = await client.get_share_detail(task)
+        await qas.send(f"处理预览:\n{detail.display_file_list()}")
 
 
 @qas.got_path("inner", "是(1)否(0)以二级目录作为视频文件夹")
-async def _(inner: Literal["1", "0"], state: T_State):
-    state["inner"] = inner == "1"
+async def _(inner: Literal["1", "0"], task: TaskItem = Task()):
+    async with QASClient() as client:
+        detail = await client.get_share_detail(task)
+        if inner == "1":
+            task.shareurl = f"{task.shareurl}#/list/share/{detail.share.first_fid}"
+        else:
+            task.shareurl = task.shareurl
+        detail = await client.get_share_detail(task)
+        await qas.send(f"处理预览:\n{detail.display_file_list()}")
 
 
 @qas.got_path("add_startfid", prompt="是(1)否(0)添加起始文件ID")
-async def _(add_startfid: Literal["1", "0"], state: T_State):
-    state["add_startfid"] = add_startfid == "1"
+async def _(add_startfid: Literal["1", "0"], task: TaskItem = Task()):
+    if add_startfid == "1":
+        async with QASClient() as client:
+            detail = await client.get_share_detail(task)
+            task.startfid = detail.last_update_file_fid
+        await qas.send(f"处理预览:\n{detail.display_file_list(task.startfid)}")
 
 
-@qas.got_path("runweek", "请输入运行周期(1-7), 用空格分隔")
-async def _(runweek: str, state: T_State):
-    pattern = r"^[1-7]( [1-7])*$"
+@qas.got_path("runweek", "请输入运行周期(1-7), 如 67 代表每周六、日运行")
+async def _(runweek: str, task: TaskItem = Task()):
+    pattern = r"^[1-7]*$"
     if matched := re.match(pattern, runweek):
-        state["runweek"] = [int(week) for week in matched.group(0).split(" ")]
+        task.runweek = cast(list[Literal[1, 2, 3, 4, 5, 6, 7]], sorted({int(week) for week in matched.group(0)}))
     else:
         await qas.reject_path("runweek")
 
 
 @qas.handle()
-async def _(state: T_State):
-    shareurl = state["shareurl"]
-    taskname = state["taskname"]
-    pattern_idx = state["pattern_idx"]
-    inner = state["inner"]
-    add_startfid = state["add_startfid"]
-    runweek = state["runweek"]
-
+async def _(task: TaskItem = Task()):
     async with QASClient() as client:
-        task = await client.add_task(
-            shareurl=shareurl,
-            taskname=taskname,
-            pattern_idx=pattern_idx,
-            inner=inner,
-            add_startfid=add_startfid,
-            runweek=runweek,
-        )
+        task = await client.add_task(task)
     await qas.finish(f"🎉 添加任务成功 🎉\n{task}")

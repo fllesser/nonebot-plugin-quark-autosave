@@ -182,3 +182,5 @@ data/
 config/
 
 .DS_Store
+
+.env.prod
