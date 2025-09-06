@@ -11,8 +11,8 @@ from nonebot.typing import T_State
 require("nonebot_plugin_alconna")
 from .client import QASClient
 from .config import Config
-from .entity import MagicRegex, PatternIdx, RunWeek, TaskItem
 from .exception import handle_exception
+from .model import MagicRegex, PatternIdx, RunWeek, TaskItem
 
 __plugin_meta__ = PluginMetadata(
     name="Quark Auto Save",
@@ -158,4 +158,4 @@ async def _(args: Message = CommandArg()):
         await qas.finish("必需指定有效的任务索引")
     async with QASClient() as client:
         task_name = await client.delete_task(task_idx)
-    await qas.finish(f"🎉 删除任务成功: {task_name}")
+    await qas.finish(f"删除任务 {task_name} 成功")

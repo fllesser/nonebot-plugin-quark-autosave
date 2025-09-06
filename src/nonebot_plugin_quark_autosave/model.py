@@ -1,35 +1,12 @@
 from datetime import datetime
-from typing import Any, Generic, Literal, TypeAlias, TypeVar
+from typing import Any, Literal, TypeAlias
 
-import pydantic
 from pydantic import BaseModel, Field
 
 from .config import plugin_config
-from .exception import QuarkAutosaveException
-
-PYDANTIC_V2 = pydantic.__version__ >= "2.0.0"
-
-T = TypeVar("T", bound=BaseModel)
 
 PatternIdx: TypeAlias = Literal[0, 1, 2, 3, 4]
 RunWeek: TypeAlias = list[Literal[1, 2, 3, 4, 5, 6, 7]]
-
-
-class QASResult(BaseModel, Generic[T]):
-    success: bool
-    data: T | None = None
-    message: str | None = None
-
-    def data_or_raise(self):
-        if self.success:
-            assert self.data is not None
-            return self.data
-        else:
-            raise QuarkAutosaveException(self.message or "未知错误")
-
-
-class FirstFile(BaseModel):
-    fid: str
 
 
 class Share(BaseModel):
@@ -91,111 +68,9 @@ class DetailInfo(BaseModel):
         return max(self.file_list, key=lambda x: x.updated_at).fid
 
 
-class AlistPlugin(BaseModel):
-    url: str
-    token: str
-    storage_id: str
-
-
-class SmartStrmPlugin(BaseModel):
-    webhook: str
-    strmtask: str
-    xlist_path_fix: str
-
-
-class AlistStrmPlugin(BaseModel):
-    url: str
-    cookie: str
-    config_id: str
-
-
-class AlistStrmGenPlugin(BaseModel):
-    url: str
-    token: str
-    storage_id: str
-    strm_save_dir: str
-    strm_replace_host: str
-
-
-class AlistSyncPlugin(BaseModel):
-    url: str
-    token: str
-    quark_storage_id: str
-    save_storage_id: str
-    tv_mode: str
-
-
-class Aria2Plugin(BaseModel):
-    host_port: str
-    secret: str
-    dir: str
-
-
-class EmbyPlugin(BaseModel):
-    url: str
-    token: str
-
-
-class PlexPlugin(BaseModel):
-    url: str
-    token: str
-    quark_root_path: str
-
-
-class FnvPlugin(BaseModel):
-    base_url: str
-    app_name: str
-    username: str
-    password: str
-    secret_string: str
-    api_key: str
-    token: str | None = None
-
-
-class Plugins(BaseModel):
-    alist: AlistPlugin
-    smartstrm: SmartStrmPlugin
-    alist_strm: AlistStrmPlugin
-    alist_strm_gen: AlistStrmGenPlugin
-    alist_sync: AlistSyncPlugin
-    aria2: Aria2Plugin
-    emby: EmbyPlugin
-    plex: PlexPlugin
-    fnv: FnvPlugin
-
-
-class MagicRegexItem(BaseModel):
+class MagicRegex(BaseModel):
     pattern: str
     replace: str
-
-
-class MagicRegex(BaseModel):
-    keep_original_name: str = Field(default="", exclude=True)
-    tv_regex: MagicRegexItem = Field(
-        alias="$TV_REGEX",
-        default=MagicRegexItem(
-            pattern=".*?([Ss]\\d{1,2})?(?:[第EePpXx\\.\\-\\_\\( ]{1,2}|^)(\\d{1,3})(?!\\d).*?\\.(mp4|mkv)",
-            replace="\\1E\\2.\\3",
-        ),
-    )
-    black_word: MagicRegexItem = Field(
-        alias="$BLACK_WORD",
-        default=MagicRegexItem(
-            pattern="^(?!.*纯享)(?!.*加更)(?!.*超前企划)(?!.*训练室)(?!.*蒸蒸日上).*",
-            replace="",
-        ),
-    )
-    show_magic: MagicRegexItem = Field(
-        alias="$SHOW_MAGIC",
-        default=MagicRegexItem(
-            pattern="^(?!.*纯享)(?!.*加更)(?!.*抢先)(?!.*预告).*?第\\d+期.*",
-            replace="{II}.{TASKNAME}.{DATE}.第{E}期{PART}.{EXT}",
-        ),
-    )
-    tv_magic: MagicRegexItem = Field(
-        alias="$TV_MAGIC",
-        default=MagicRegexItem(pattern="", replace="{TASKNAME}.{SXX}E{E}.{EXT}"),
-    )
 
     @classmethod
     def patterns_alias(cls) -> list[str]:
@@ -243,7 +118,8 @@ class TaskItem(BaseModel):
     taskname: str
     shareurl: str
     savepath: str
-    pattern: str = Field(default="$TV_REGEX")
+    # 这三个不能 optional
+    pattern: str = ""
     replace: str = ""
     enddate: str = ""
     addition: Addition | None = None
@@ -309,7 +185,6 @@ class TaskItem(BaseModel):
         # 如果 start_fid 不为空，则过滤掉小于 start_fid 的文件
         file_list = [file for file in self.detail().file_list if file.updated_at >= self.start_fid_updated_at]
         res_lst = [f"{i}. {file.regex_result}" for i, file in enumerate(file_list)]
-        # 如果文件大于 15 个，取前 5 个，和后 5 个, 中间用 ... 代替
         if len(res_lst) > 15:
             res_lst = [*res_lst[:5], "...", *res_lst[-5:]]
         return "\n".join(res_lst)
@@ -319,60 +194,16 @@ class ShareDetailPayload(BaseModel):
     shareurl: str
     stoken: str = ""
     task: TaskItem
-    magic_regex: MagicRegex = Field(default_factory=MagicRegex)
-
-
-class PushConfig(BaseModel):
-    QUARK_SIGN_NOTIFY: bool
-    GOBOT_URL: str
-    GOBOT_QQ: str
-    GOBOT_TOKEN: str
-
-
-class CloudSaver(BaseModel):
-    server: str
-    username: str
-    password: str
-    token: str
-
-
-class PanSou(BaseModel):
-    server: str
-
-
-class Source(BaseModel):
-    cloudsaver: CloudSaver
-    pansou: PanSou
-
-
-class TaskPluginsConfigDefault(BaseModel):
-    smartstrm: dict[str, Any] = {}
-    alist_strm_gen: dict[str, Any]
-    alist_sync: dict[str, Any]
-    aria2: dict[str, Any]
-    emby: dict[str, Any]
-    fnv: dict[str, Any]
+    magic_regex: dict[str, MagicRegex] = Field(default_factory=dict)
 
 
 class AutosaveData(BaseModel):
     cookie: list[str]
-    push_config: PushConfig
-    plugins: Plugins
-    magic_regex: MagicRegex
-    tasklist: list[TaskItem] = Field(default_factory=list)
-    crontab: str
-    source: Source
     api_token: str
-    task_plugins_config_default: TaskPluginsConfigDefault
-
-
-def model_dump(data: BaseModel):
-    if PYDANTIC_V2:
-        return data.model_dump()
-    return data.dict()
-
-
-def model_dump_json(data: BaseModel):
-    if PYDANTIC_V2:
-        return data.model_dump_json()
-    return data.json()
+    crontab: str
+    tasklist: list[TaskItem]
+    magic_regex: dict[str, MagicRegex]  # $TV_REGEX, (pattern, replace)
+    source: dict[str, Any]
+    push_config: dict[str, Any]
+    plugins: dict[str, Any]
+    task_plugins_config_default: dict[str, Any]
