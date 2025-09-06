@@ -25,9 +25,10 @@ test = [
   "nonebug>=0.3.7,<1.0.0",
   "pytest-xdist>=3.8.0,<4.0.0",
   "pytest-asyncio>=1.1.0,<1.2.0",
+  "nonebot-adapter-onebot>=2.4.6,<3.0.0",
 ]
 
-adapters = ["nonebot-adapter-telegram>=0.1.0b20", "nonebot-adapter-onebot>=2.4.6,<3.0.0"]
+adapter_telegram = ["nonebot-adapter-telegram>=0.1.0b20"]
 
 pydantic-v1 = ["pydantic>=1.10.0,<2.0.0"]
 pydantic-v2 = ["pydantic>2.0.0,<3.0.0"]
@@ -35,8 +36,14 @@ pydantic-v2 = ["pydantic>2.0.0,<3.0.0"]
 
 [tool.uv]
 required-version = ">=0.8.14"
-default-groups = ["test", "dev", "adapters"]
-conflicts = [[{ group = "pydantic-v1" }, { group = "pydantic-v2" }, { group = "adapters" }]]
+default-groups = ["test", "dev"]
+conflicts = [
+  [
+    { group = "pydantic-v1" },
+    { group = "pydantic-v2" },
+    { group = "adapter_telegram" },
+  ],
+]
 
 [tool.nonebot]
 adapters = [
