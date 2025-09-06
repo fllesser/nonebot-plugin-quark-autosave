@@ -263,10 +263,13 @@ class TaskItem(BaseModel):
             f"替换规则: {self.replace}\n"
             f"结束日期: {self.enddate if self.enddate else '始终有效'}\n"
             f"运行周期: {self.runweek}\n"
-            f"附加配置:\n{self.addition}\n"
+            # f"附加配置:\n{self.addition}\n"
             f"忽略扩展名: {self.ignore_extension}\n"
             f"起始文件: {self.startfid}"
         )
+
+    def display_simple(self) -> str:
+        return f"{self.taskname}\n - 运行周期: {self.runweek}\n - 匹配规则: {self.pattern}"
 
     @classmethod
     def template(

@@ -1,8 +1,9 @@
 import re
 from typing import Literal, cast
 
-from nonebot import logger, require  # noqa: F401
-from nonebot.params import Depends
+from nonebot import on_command, require
+from nonebot.adapters import Message
+from nonebot.params import CommandArg, Depends
 from nonebot.permission import SUPERUSER
 from nonebot.plugin import PluginMetadata, inherit_supported_adapters
 from nonebot.typing import T_State
@@ -11,6 +12,7 @@ require("nonebot_plugin_alconna")
 from .client import QASClient
 from .config import Config
 from .entity import MagicRegex, PatternIdx, RunWeek, TaskItem
+from .exception import handle_exception
 
 __plugin_meta__ = PluginMetadata(
     name="Quark Auto Save",
@@ -85,6 +87,7 @@ async def _(shareurl: str, state: T_State):
     state[TASK_KEY] = TaskItem.template(state["taskname"], shareurl)
 
 
+@handle_exception()
 @qas.got_path("pattern_idx", f"请输入模式索引: \n{MagicRegex.display_patterns_alias()}")
 async def _(pattern_idx: Literal["0", "1", "2", "3", "4"], task: TaskItem = Task()):
     idx: PatternIdx = cast(PatternIdx, int(pattern_idx))
@@ -95,6 +98,7 @@ async def _(pattern_idx: Literal["0", "1", "2", "3", "4"], task: TaskItem = Task
         await qas.send(f"转存预览:\n{task.display_file_list()}")
 
 
+@handle_exception()
 @qas.got_path("inner", "是(1)否(0)以二级目录作为视频文件夹")
 async def _(inner: Literal["1", "0"], task: TaskItem = Task()):
     if inner == "1":
@@ -121,7 +125,37 @@ async def _(runweek: str, task: TaskItem = Task()):
 
 
 @qas.handle()
+@handle_exception()
 async def _(task: TaskItem = Task()):
     async with QASClient() as client:
         task = await client.add_task(task)
     await qas.finish(f"🎉 添加任务成功 🎉\n{task}")
+
+
+@handle_exception()
+@on_command(("qas", "run")).handle()
+async def _():
+    async with QASClient() as client:
+        async for res in client.run_script():
+            await qas.send(res)
+
+
+@handle_exception()
+@on_command(("qas", "list")).handle()
+async def _():
+    async with QASClient() as client:
+        tasks = await client.list_tasks()
+        task_strs = "\n".join(f"{i}. {task.display_simple()}" for i, task in enumerate(tasks, 1))
+        await qas.send(f"当前任务列表:\n{task_strs}")
+
+
+@handle_exception()
+@on_command(("qas", "del")).handle()
+async def _(args: Message = CommandArg()):
+    try:
+        task_idx = int(args.extract_plain_text())
+    except ValueError:
+        await qas.finish("必需指定有效的任务索引")
+    async with QASClient() as client:
+        task_name = await client.delete_task(task_idx)
+    await qas.finish(f"🎉 删除任务成功: {task_name}")
