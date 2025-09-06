@@ -18,6 +18,7 @@ class QASClient:
         await self.client.aclose()
 
     async def delete_task(self, task_idx: int):
+        """删除任务"""
         data = await self.get_data()
         if 0 < task_idx <= len(data.tasklist):
             task_item = data.tasklist.pop(task_idx - 1)
@@ -27,15 +28,12 @@ class QASClient:
             raise QuarkAutosaveException(f"任务索引 {task_idx} 无效")
 
     async def list_tasks(self):
+        """获取任务列表"""
         data = await self.get_data()
         return data.tasklist
 
     async def update(self, data: AutosaveData):
-        """更新 QuarkAutosave 数据
-
-        Args:
-            data (AutosaveData): QuarkAutosave 数据
-        """
+        """更新 QuarkAutosave 数据"""
         response = await self.client.post("/update", json=model_dump(data))
         if response.status_code >= 500:
             raise QuarkAutosaveException(f"服务端错误: {response.status_code}")
@@ -60,14 +58,7 @@ class QASClient:
                 yield "\n".join(task_res)
 
     async def add_task(self, task: TaskItem):
-        """添加自动转存任务到 QuarkAutosave
-
-        Args:
-            task (TaskItem): 自动转存任务
-
-        Returns:
-            TaskItem: 自动转存任务
-        """
+        """添加自动转存任务到 QuarkAutosave"""
         response = await self.client.post("/api/add_task", json=model_dump(task))
         resp_json = response.json()
         if response.status_code >= 500:
@@ -76,14 +67,7 @@ class QASClient:
         return result.data_or_raise()
 
     async def get_share_detail(self, task: TaskItem):
-        """获取分享链接详情
-
-        Args:
-            task (TaskItem): 任务
-
-        Returns:
-            DetailInfo: 分享详情
-        """
+        """获取分享链接详情"""
         payload = ShareDetailPayload(
             shareurl=task.shareurl,
             task=task,
@@ -97,11 +81,7 @@ class QASClient:
         return result.data_or_raise()
 
     async def get_data(self):
-        """获取 QuarkAutosave 数据
-
-        Returns:
-            QuarkAutosaveData: QuarkAutosave 数据
-        """
+        """获取 QuarkAutosave 数据"""
         response = await self.client.get("/data")
         if response.status_code > 500:
             raise QuarkAutosaveException(f"服务端错误: {response.status_code}")
