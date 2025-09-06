@@ -1,35 +1,16 @@
 from datetime import datetime
-from typing import Any, Generic, Literal, TypeAlias, TypeVar
+from typing import Any, Literal, TypeAlias
 
-import pydantic
 from pydantic import BaseModel, Field
 
 from .config import plugin_config
-from .exception import QuarkAutosaveException
-
-PYDANTIC_V2 = pydantic.__version__ >= "2.0.0"
-
-T = TypeVar("T", bound=BaseModel)
 
 PatternIdx: TypeAlias = Literal[0, 1, 2, 3, 4]
 RunWeek: TypeAlias = list[Literal[1, 2, 3, 4, 5, 6, 7]]
 
 
-class QASResult(BaseModel, Generic[T]):
-    success: bool
-    data: T | None = None
-    message: str | None = None
-
-    def data_or_raise(self):
-        if self.success:
-            assert self.data is not None
-            return self.data
-        else:
-            raise QuarkAutosaveException(self.message or "未知错误")
-
-
-class FirstFile(BaseModel):
-    fid: str
+# class FirstFile(BaseModel):
+#     fid: str
 
 
 class Share(BaseModel):
@@ -91,77 +72,77 @@ class DetailInfo(BaseModel):
         return max(self.file_list, key=lambda x: x.updated_at).fid
 
 
-class AlistPlugin(BaseModel):
-    url: str
-    token: str
-    storage_id: str
+# class AlistPlugin(BaseModel):
+#     url: str
+#     token: str
+#     storage_id: str
 
 
-class SmartStrmPlugin(BaseModel):
-    webhook: str
-    strmtask: str
-    xlist_path_fix: str
+# class SmartStrmPlugin(BaseModel):
+#     webhook: str
+#     strmtask: str
+#     xlist_path_fix: str
 
 
-class AlistStrmPlugin(BaseModel):
-    url: str
-    cookie: str
-    config_id: str
+# class AlistStrmPlugin(BaseModel):
+#     url: str
+#     cookie: str
+#     config_id: str
 
 
-class AlistStrmGenPlugin(BaseModel):
-    url: str
-    token: str
-    storage_id: str
-    strm_save_dir: str
-    strm_replace_host: str
+# class AlistStrmGenPlugin(BaseModel):
+#     url: str
+#     token: str
+#     storage_id: str
+#     strm_save_dir: str
+#     strm_replace_host: str
 
 
-class AlistSyncPlugin(BaseModel):
-    url: str
-    token: str
-    quark_storage_id: str
-    save_storage_id: str
-    tv_mode: str
+# class AlistSyncPlugin(BaseModel):
+#     url: str
+#     token: str
+#     quark_storage_id: str
+#     save_storage_id: str
+#     tv_mode: str
 
 
-class Aria2Plugin(BaseModel):
-    host_port: str
-    secret: str
-    dir: str
+# class Aria2Plugin(BaseModel):
+#     host_port: str
+#     secret: str
+#     dir: str
 
 
-class EmbyPlugin(BaseModel):
-    url: str
-    token: str
+# class EmbyPlugin(BaseModel):
+#     url: str
+#     token: str
 
 
-class PlexPlugin(BaseModel):
-    url: str
-    token: str
-    quark_root_path: str
+# class PlexPlugin(BaseModel):
+#     url: str
+#     token: str
+#     quark_root_path: str
 
 
-class FnvPlugin(BaseModel):
-    base_url: str
-    app_name: str
-    username: str
-    password: str
-    secret_string: str
-    api_key: str
-    token: str | None = None
+# class FnvPlugin(BaseModel):
+#     base_url: str
+#     app_name: str
+#     username: str
+#     password: str
+#     secret_string: str
+#     api_key: str
+#     token: str | None = None
 
 
-class Plugins(BaseModel):
-    alist: AlistPlugin
-    smartstrm: SmartStrmPlugin
-    alist_strm: AlistStrmPlugin
-    alist_strm_gen: AlistStrmGenPlugin
-    alist_sync: AlistSyncPlugin
-    aria2: Aria2Plugin
-    emby: EmbyPlugin
-    plex: PlexPlugin
-    fnv: FnvPlugin
+# class Plugins(BaseModel):
+#     alist: AlistPlugin
+#     smartstrm: SmartStrmPlugin
+#     alist_strm: AlistStrmPlugin
+#     alist_strm_gen: AlistStrmGenPlugin
+#     alist_sync: AlistSyncPlugin
+#     aria2: Aria2Plugin
+#     emby: EmbyPlugin
+#     plex: PlexPlugin
+#     fnv: FnvPlugin
 
 
 class MagicRegexItem(BaseModel):
@@ -309,7 +290,6 @@ class TaskItem(BaseModel):
         # 如果 start_fid 不为空，则过滤掉小于 start_fid 的文件
         file_list = [file for file in self.detail().file_list if file.updated_at >= self.start_fid_updated_at]
         res_lst = [f"{i}. {file.regex_result}" for i, file in enumerate(file_list)]
-        # 如果文件大于 15 个，取前 5 个，和后 5 个, 中间用 ... 代替
         if len(res_lst) > 15:
             res_lst = [*res_lst[:5], "...", *res_lst[-5:]]
         return "\n".join(res_lst)
@@ -357,22 +337,10 @@ class TaskPluginsConfigDefault(BaseModel):
 class AutosaveData(BaseModel):
     cookie: list[str]
     push_config: PushConfig
-    plugins: Plugins
+    plugins: dict[str, Any]
     magic_regex: MagicRegex
     tasklist: list[TaskItem] = Field(default_factory=list)
     crontab: str
     source: Source
     api_token: str
     task_plugins_config_default: TaskPluginsConfigDefault
-
-
-def model_dump(data: BaseModel):
-    if PYDANTIC_V2:
-        return data.model_dump()
-    return data.dict()
-
-
-def model_dump_json(data: BaseModel):
-    if PYDANTIC_V2:
-        return data.model_dump_json()
-    return data.json()

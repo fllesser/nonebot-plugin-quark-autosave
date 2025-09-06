@@ -4,7 +4,7 @@ from functools import wraps
 from nonebot.matcher import current_matcher
 
 
-class QuarkAutosaveException(Exception):
+class QASException(Exception):
     def __init__(self, message: str):
         super().__init__(f"quark-auto-save: {message}")
 
@@ -15,7 +15,7 @@ def handle_exception():
         async def wrapper(*args, **kwargs):
             try:
                 return await func(*args, **kwargs)
-            except QuarkAutosaveException as e:
+            except QASException as e:
                 matcher = current_matcher.get()
                 await matcher.finish(str(e))
 

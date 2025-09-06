@@ -1,9 +1,10 @@
 import httpx
 from nonebot import logger
+from nonebot.compat import model_dump
 
 from .config import plugin_config
-from .entity import AutosaveData, DetailInfo, QASResult, ShareDetailPayload, TaskItem, model_dump
-from .exception import QuarkAutosaveException
+from .exception import QASException
+from .model import AutosaveData, DetailInfo, ShareDetailPayload, TaskItem
 
 
 class QASClient:
@@ -25,7 +26,7 @@ class QASClient:
             await self.update(data)
             return task_item.taskname
         else:
-            raise QuarkAutosaveException(f"任务索引 {task_idx} 无效")
+            raise QASException(f"任务索引 {task_idx} 无效")
 
     async def list_tasks(self):
         """获取任务列表"""
@@ -36,7 +37,7 @@ class QASClient:
         """更新 QuarkAutosave 数据"""
         response = await self.client.post("/update", json=model_dump(data))
         if response.status_code >= 500:
-            raise QuarkAutosaveException(f"服务端错误: {response.status_code}")
+            raise QASException(f"服务端错误: {response.status_code}")
         resp_json = response.json()
         logger.debug(f"更新 QuarkAutosave 数据: {resp_json}")
 
@@ -62,9 +63,11 @@ class QASClient:
         response = await self.client.post("/api/add_task", json=model_dump(task))
         resp_json = response.json()
         if response.status_code >= 500:
-            raise QuarkAutosaveException(f"服务端错误: {response.status_code}")
-        result = QASResult[TaskItem](**resp_json)
-        return result.data_or_raise()
+            raise QASException(f"服务端错误: {response.status_code}")
+        if bool(resp_json.get("success")):
+            return TaskItem(**resp_json["data"])
+        else:
+            raise QASException(resp_json.get("message") or "未知错误")
 
     async def get_share_detail(self, task: TaskItem):
         """获取分享链接详情"""
@@ -74,17 +77,21 @@ class QASClient:
         )
         response = await self.client.post("/get_share_detail", json=model_dump(payload))
         if response.status_code >= 500:
-            raise QuarkAutosaveException(f"服务端错误: {response.status_code}")
+            raise QASException(f"服务端错误: {response.status_code}")
         resp_json = response.json()
         logger.debug(f"获取分享详情: {resp_json}")
-        result = QASResult[DetailInfo](**resp_json)
-        return result.data_or_raise()
+        if bool(resp_json.get("success")):
+            return DetailInfo(**resp_json["data"])
+        else:
+            raise QASException(resp_json.get("message") or "未知错误")
 
     async def get_data(self):
         """获取 QuarkAutosave 数据"""
         response = await self.client.get("/data")
         if response.status_code > 500:
-            raise QuarkAutosaveException(f"服务端错误: {response.status_code}")
+            raise QASException(f"服务端错误: {response.status_code}")
         resp_json = response.json()
-        result = QASResult[AutosaveData](**resp_json)
-        return result.data_or_raise()
+        if bool(resp_json.get("success")):
+            return AutosaveData(**resp_json["data"])
+        else:
+            raise QASException(resp_json.get("message") or "未知错误")
