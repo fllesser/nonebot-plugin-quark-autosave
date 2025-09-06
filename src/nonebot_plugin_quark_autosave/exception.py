@@ -1,14 +1,11 @@
 from collections.abc import Callable
 from functools import wraps
 
-from nonebot import logger
 from nonebot.matcher import current_matcher
 
 
 class QuarkAutosaveException(Exception):
-    def __init__(self, message: str):
-        super().__init__(message)
-        logger.error(message)
+    pass
 
 
 def handle_exception():
