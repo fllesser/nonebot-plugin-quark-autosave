@@ -24,7 +24,7 @@ class QASClient:
             await self.update(data)
             return task_item.taskname
         else:
-            raise QuarkAutosaveException(f"任务索引 {task_idx} 不存在")
+            raise QuarkAutosaveException(f"任务索引 {task_idx} 无效")
 
     async def list_tasks(self):
         data = await self.get_data()
@@ -106,6 +106,5 @@ class QASClient:
         if response.status_code > 500:
             raise QuarkAutosaveException(f"服务端错误: {response.status_code}")
         resp_json = response.json()
-        # logger.debug(f"获取 QuarkAutosave 数据: {resp_json}")
         result = QASResult[AutosaveData](**resp_json)
         return result.data_or_raise()

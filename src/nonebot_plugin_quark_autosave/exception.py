@@ -5,7 +5,8 @@ from nonebot.matcher import current_matcher
 
 
 class QuarkAutosaveException(Exception):
-    pass
+    def __init__(self, message: str):
+        super().__init__(f"quark-auto-save: {message}")
 
 
 def handle_exception():
