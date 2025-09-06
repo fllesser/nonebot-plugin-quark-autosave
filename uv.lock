@@ -629,7 +629,7 @@ wheels = [
 
 [[package]]
 name = "nonebot-plugin-quark-autosave"
-version = "0.1.1"
+version = "0.1.2"
 source = { editable = "." }
 dependencies = [
     { name = "httpx" },
