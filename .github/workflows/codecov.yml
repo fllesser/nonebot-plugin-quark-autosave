@@ -13,7 +13,7 @@ on:
 
 jobs:
   test:
-    name: Test Coverage
+    name: Test
     runs-on: ubuntu-latest
     concurrency:
       group: test-coverage-${{ github.ref }}-${{ matrix.python-version }}-${{ matrix.pydantic-version }}
@@ -44,22 +44,16 @@ jobs:
         run: uv sync --no-dev --group ${{ matrix.pydantic-version }}
 
       - name: Run Pytest
-        run: uv run --no-sync pytest --cov --junitxml=junit.xml -o junit_family=legacy --cov-report=xml
+        run: uv run poe test
 
       - name: Upload test results
         uses: codecov/test-results-action@v1
         with:
+          token: ${{ secrets.CODECOV_TOKEN }}
           env_vars: PYTHON_VERSION,PYDANTIC_VERSION
-          files: ./tests/junit.xml
-          flags: unittests
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           env_vars: PYTHON_VERSION,PYDANTIC_VERSION
-          files: ./tests/coverage.xml
-          flags: unittests
-          fail_ci_if_error: true
