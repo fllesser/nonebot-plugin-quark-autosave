@@ -15,11 +15,13 @@ jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     concurrency:
       group: test-coverage-${{ github.ref }}-${{ matrix.python-version }}-${{ matrix.pydantic-version }}
       cancel-in-progress: true
-    permissions:
-      id-token: write
+
     strategy:
       fail-fast: false
       matrix:
