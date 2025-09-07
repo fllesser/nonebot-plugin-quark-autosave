@@ -37,6 +37,7 @@ jobs:
       - name: Install uv and set the python version
         uses: astral-sh/setup-uv@v6
         with:
+          enable-cache: true
           python-version: ${{ matrix.python-version }}
           version: "latest"
 
@@ -46,7 +47,8 @@ jobs:
       - name: Run Pytest
         run: uv run --no-sync poe test
 
-      - name: Upload test results
+      - name: Upload test results to Codecov
+        if: ${{ !cancelled() }}
         uses: codecov/test-results-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
