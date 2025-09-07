@@ -44,7 +44,7 @@ jobs:
         run: uv sync --no-dev --group ${{ matrix.pydantic-version }}
 
       - name: Run Pytest
-        run: uv run --no-sync pytest --cov --junitxml=junit.xml -o junit_family=legacy --cov-report=xml
+        run: uv run poe test
 
       - name: Upload test results
         uses: codecov/test-results-action@v1
