@@ -26,6 +26,7 @@ test = [
   "pytest-xdist>=3.8.0,<4.0.0",
   "pytest-asyncio>=1.1.0,<1.2.0",
   "nonebot-adapter-onebot>=2.4.6,<3.0.0",
+  "pytest-cov>=6.3.0",
 ]
 
 adapter_telegram = ["nonebot-adapter-telegram>=0.1.0b20"]
@@ -57,12 +58,11 @@ asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "session"
 pythonpath = ["src"]
 addopts = [
-  "-v",               # 详细输出
-  "-s",               # 显示打印信息
-  "--tb=short",       # 简短的错误回溯
-  "-ra",              # 显示所有测试结果摘要
-  "--strict-markers", # 严格标记模式
-  # "--doctest-modules", # 运行文档测试
+  "-v",                    # 详细输出
+  "-s",                    # 显示打印信息
+  "--tb=short",            # 简短的错误回溯
+  "-ra",                   # 显示所有测试结果摘要
+  "--strict-markers",      # 严格标记模式
   "--import-mode=prepend", # 导入模式
 ]
 

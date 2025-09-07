@@ -1,0 +1,65 @@
+name: Code Coverage
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    paths:
+      - "src/**"
+      - "tests/**"
+      - "pyproject.toml"
+      - "uv.lock"
+
+jobs:
+  test:
+    name: Test Coverage
+    runs-on: ubuntu-latest
+    concurrency:
+      group: test-coverage-${{ github.ref }}-${{ matrix.python-version }}-${{ matrix.pydantic-version }}
+      cancel-in-progress: true
+    permissions:
+      id-token: write
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+        # os: [ubuntu-latest, windows-latest, macos-latest]
+        pydantic-version: [pydantic-v1, pydantic-v2]
+    env:
+      # OS: ${{ matrix.os }}
+      PYTHON_VERSION: ${{ matrix.python-version }}
+      PYDANTIC_VERSION: ${{ matrix.pydantic-version }}
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install uv and set the python version
+        uses: astral-sh/setup-uv@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+          version: "latest"
+
+      - name: Install Dependencies for test group
+        run: uv sync --no-dev --group ${{ matrix.pydantic-version }}
+
+      - name: Run Pytest
+        run: uv run --no-sync pytest --cov --junitxml=junit.xml -o junit_family=legacy --cov-report=xml
+
+      - name: Upload test results
+        uses: codecov/test-results-action@v1
+        with:
+          env_vars: PYTHON_VERSION,PYDANTIC_VERSION
+          files: ./tests/junit.xml
+          flags: unittests
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          env_vars: PYTHON_VERSION,PYDANTIC_VERSION
+          files: ./tests/coverage.xml
+          flags: unittests
+          fail_ci_if_error: true
