@@ -57,7 +57,7 @@ adapters = [
 plugins = ["nonebot_plugin_quark_autosave"]
 
 [tool.poe.tasks]
-test = "uv run pytest --cov=src/nonebot_plugin_quark_autosave --cov-report xml --junitxml=./junit.xml -n auto"
+test = "uv run pytest --cov=src --cov-report xml --junitxml=./junit.xml -n auto"
 bump = "uv tool run bump-my-version bump"
 show-bump = "uv tool run bump-my-version show-bump"
 
