@@ -51,6 +51,7 @@ jobs:
         with:
           env_vars: PYTHON_VERSION,PYDANTIC_VERSION
           files: ./tests/junit.xml
+          flags: unittests
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
