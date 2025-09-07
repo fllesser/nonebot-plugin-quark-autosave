@@ -18,6 +18,8 @@ jobs:
     concurrency:
       group: test-coverage-${{ github.ref }}-${{ matrix.python-version }}-${{ matrix.pydantic-version }}
       cancel-in-progress: true
+    permissions:
+      id-token: write
     strategy:
       fail-fast: false
       matrix:
@@ -42,14 +44,13 @@ jobs:
         run: uv sync --no-dev --group ${{ matrix.pydantic-version }}
 
       - name: Run Pytest
-        run: uv run --no-sync pytest --cov=src --junitxml=junit.xml -o junit_family=legacy
+        run: uv run --no-sync pytest --cov --junitxml=junit.xml -o junit_family=legacy
 
       - name: Upload test results
         uses: codecov/test-results-action@v1
         with:
           env_vars: PYTHON_VERSION,PYDANTIC_VERSION
           files: ./tests/junit.xml
-          flags: unittests
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
@@ -58,3 +59,6 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           env_vars: PYTHON_VERSION,PYDANTIC_VERSION
+          files: ./tests/coverage.xml
+          flags: unittests
+          fail_ci_if_error: true
