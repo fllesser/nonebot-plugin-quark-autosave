@@ -15,8 +15,8 @@ from .exception import handle_exception
 from .model import MagicRegex, PatternIdx, RunWeek, TaskItem
 
 __plugin_meta__ = PluginMetadata(
-    name="Quark Auto Save",
-    description="配合 quark-auto-save(https://github.com/Cp0204/quark-auto-save), 快速添加自动保存任务",
+    name="夸克自动转存",
+    description="配合 quark-auto-save(https://github.com/Cp0204/quark-auto-save) 使用, 支持添加，删除，列出，运行任务",
     usage="qas",
     type="application",  # library
     homepage="https://github.com/fllesser/nonebot-plugin-quark-autosave",
