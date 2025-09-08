@@ -132,7 +132,7 @@ async def _(task: TaskItem = Task()):
     await qas.finish(f"🎉 添加任务成功 🎉\n{task}")
 
 
-@on_command(("qas", "run")).handle()
+@on_command(("qas", "run"), permission=SUPERUSER).handle()
 @handle_exception()
 async def _():
     async with QASClient() as client:
@@ -140,7 +140,7 @@ async def _():
             await qas.send(res)
 
 
-@on_command(("qas", "list")).handle()
+@on_command(("qas", "list"), permission=SUPERUSER).handle()
 @handle_exception()
 async def _():
     async with QASClient() as client:
@@ -149,7 +149,7 @@ async def _():
         await qas.send(f"当前任务列表:\n{task_strs}")
 
 
-@on_command(("qas", "del")).handle()
+@on_command(("qas", "del"), permission=SUPERUSER).handle()
 @handle_exception()
 async def _(args: Message = CommandArg()):
     try:
