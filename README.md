@@ -20,6 +20,9 @@
 <a href="https://results.pre-commit.ci/latest/github/fllesser/nonebot-plugin-quark-autosave/master">
     <img src="https://results.pre-commit.ci/badge/github/fllesser/nonebot-plugin-quark-autosave/master.svg" alt="pre-commit" />
 </a>
+<a href="https://codecov.io/gh/fllesser/nonebot-plugin-quark-autosave" >
+    <img src="https://codecov.io/gh/fllesser/nonebot-plugin-quark-autosave/graph/badge.svg?token=55rXGtMLMx" alt="codecov" />
+</a>
 </div>
 
 ## 📖 介绍
