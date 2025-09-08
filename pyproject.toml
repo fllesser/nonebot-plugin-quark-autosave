@@ -29,6 +29,7 @@ test = [
   "nonebot-adapter-onebot>=2.4.6,<3.0.0",
   "pytest-cov>=6.3.0",
   "poethepoet>=0.36.0",
+  "respx>=0.22.0",
 ]
 
 
@@ -61,6 +62,15 @@ test = "uv run pytest --cov=src --cov-report xml --junitxml=./junit.xml -n auto"
 bump = "uv tool run bump-my-version bump"
 show-bump = "uv tool run bump-my-version show-bump"
 
+[tool.coverage.report]
+show_missing = true # 相当于 --cov-report=term-missing:cite[1]
+omit = ["src/nonebot_plugin_quark_autosave/client.py"]
+exclude_lines = [
+  "raise NotImplementedError",
+  "if TYPE_CHECKING:",
+  "@overload",
+  "except ImportError:",
+]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
