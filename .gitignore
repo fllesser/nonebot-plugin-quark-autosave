@@ -184,4 +184,4 @@ config/
 .DS_Store
 
 .env.prod
-.junit.xml
+junit.xml
