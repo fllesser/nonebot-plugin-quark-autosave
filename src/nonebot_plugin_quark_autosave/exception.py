@@ -1,6 +1,7 @@
 from collections.abc import Callable
 from functools import wraps
 
+import httpx
 from nonebot.matcher import current_matcher
 
 
@@ -18,6 +19,10 @@ def handle_exception():
             except QASException as e:
                 matcher = current_matcher.get()
                 await matcher.finish(str(e))
+            except httpx.HTTPError:
+                matcher = current_matcher.get()
+                await matcher.send("请求失败, 详见后台输出")
+                raise
 
         return wrapper
 
