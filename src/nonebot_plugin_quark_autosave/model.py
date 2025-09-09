@@ -157,7 +157,7 @@ class TaskItem(BaseModel):
         return cls(
             taskname=taskname,
             shareurl=shareurl,
-            savepath=f"/{plugin_config.quark_auto_save_path_base}/{taskname}",
+            savepath=f"/{plugin_config.qas_path_base}/{taskname}",
             pattern=MagicRegex.get_pattern_alias(pattern_idx),
         )
 

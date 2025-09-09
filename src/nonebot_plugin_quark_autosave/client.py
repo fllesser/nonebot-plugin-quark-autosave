@@ -12,8 +12,8 @@ from .model import AutosaveData, DetailInfo, ShareDetailPayload, TaskItem
 class QASClient:
     async def __aenter__(self):
         self.client = httpx.AsyncClient(
-            base_url=plugin_config.quark_autosave_endpoint,
-            params={"token": plugin_config.quark_autosave_token},
+            base_url=plugin_config.qas_endpoint,
+            params={"token": plugin_config.qas_token},
         )
         return self
 
