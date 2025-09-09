@@ -54,7 +54,7 @@ jobs:
         run: uv sync --no-dev --group ${{ matrix.pydantic-version }}
 
       - name: Run Pytest
-        run: pytest --cov=src --cov-report xml --junitxml=./junit.xml -n auto
+        run: uv run --no-sync pytest --cov=src --cov-report xml --junitxml=./junit.xml -n auto
           # uv run --no-sync poe test
           # uv pip show pydantic
 
