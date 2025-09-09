@@ -73,24 +73,24 @@ class MagicRegex(BaseModel):
     replace: str
 
     @classmethod
-    def patterns_alias(cls) -> list[str]:
+    def pattern_aliases(cls) -> list[str]:
         return [
             "",
-            "$TV_REGEX",
-            "$BLACK_WORD",
-            "$SHOW_MAGIC",
-            "$TV_MAGIC",
+            "tv_regex",
+            "black_word",
+            "show_magic",
+            "tv_magic",
         ]
 
     @classmethod
     def display_patterns_alias(cls) -> str:
         """显示模式索引和别名"""
-        return "\n".join(f" - {i}. {alias or '以原始媒体名称转存'}" for i, alias in enumerate(cls.patterns_alias()))
+        return "\n".join(f" - {i}. {alias or '以原始媒体名称转存'}" for i, alias in enumerate(cls.pattern_aliases()))
 
     @classmethod
     def get_pattern_alias(cls, pattern_idx: PatternIdx) -> str:
         """根据模式索引获取模式别名"""
-        return cls.patterns_alias()[pattern_idx]
+        return cls.pattern_aliases()[pattern_idx]
 
 
 class Addition(BaseModel):
@@ -202,7 +202,7 @@ class AutosaveData(BaseModel):
     api_token: str
     crontab: str
     tasklist: list[TaskItem]
-    magic_regex: dict[str, MagicRegex]  # $TV_REGEX, (pattern, replace)
+    magic_regex: dict[str, MagicRegex]  # tv_regex, black_word, show_magic, tv_magic, (pattern, replace)
     source: dict[str, Any]
     push_config: dict[str, Any]
     plugins: dict[str, Any]
