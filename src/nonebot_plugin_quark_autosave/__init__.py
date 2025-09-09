@@ -1,9 +1,10 @@
 import re
 from typing import Literal, cast
 
-from nonebot import on_command, require
+from nonebot import logger, on_command, on_regex, require
 from nonebot.adapters import Message
-from nonebot.params import CommandArg, Depends
+from nonebot.matcher import Matcher
+from nonebot.params import CommandArg, Depends, RegexMatched
 from nonebot.permission import SUPERUSER
 from nonebot.plugin import PluginMetadata, inherit_supported_adapters
 from nonebot.typing import T_State
@@ -29,19 +30,22 @@ __plugin_meta__ = PluginMetadata(
 from arclet.alconna import Alconna, Args
 from nonebot_plugin_alconna import Match, on_alconna
 
-# 快速添加 auto save 任务
+SHARE_URL_REGEX = r"https://pan.quark.cn/s/[0-9a-zA-Z]+(?:#/list/share/[0-9a-zA-Z]+)?"
+
 qas = on_alconna(
     Alconna(
         "qas",
         Args["taskname?", str],
-        Args["shareurl?", str],
+        Args["shareurl?", f"re:{SHARE_URL_REGEX}"],
         Args["pattern_idx?", Literal["0", "1", "2", "3", "4"]],
         Args["inner?", Literal["1", "0"]],
         Args["startfid_idx?", int],
         Args["runweek?", str],
     ),
     permission=SUPERUSER,
+    block=True,
 )
+
 
 TASK_KEY = "QUARK_AUTO_SAVE_TASK"
 
@@ -55,25 +59,14 @@ def Task() -> TaskItem:
 
 @qas.handle()
 async def _(
-    shareurl: Match[str],
     taskname: Match[str],
-    pattern_idx: Match[Literal["0", "1", "2", "3"]],
-    inner: Match[Literal["1", "0"]],
-    startfid_idx: Match[int],
-    runweek: Match[str],
+    shareurl: Match[str],
 ):
-    if shareurl.available:
-        qas.set_path_arg("shareurl", shareurl.result)
     if taskname.available:
         qas.set_path_arg("taskname", taskname.result)
-    if pattern_idx.available:
-        qas.set_path_arg("pattern_idx", pattern_idx.result)
-    if inner.available:
-        qas.set_path_arg("inner", inner.result)
-    if startfid_idx.available:
-        qas.set_path_arg("startfid_idx", startfid_idx.result)
-    if runweek.available:
-        qas.set_path_arg("runweek", runweek.result)
+
+    if shareurl.available:
+        qas.set_path_arg("shareurl", shareurl.result)
 
 
 @qas.got_path("taskname", "请输入任务名称")
@@ -92,6 +85,7 @@ async def _(shareurl: str, state: T_State):
 async def _(pattern_idx: Literal["0", "1", "2", "3", "4"], task: TaskItem = Task()):
     idx: PatternIdx = cast(PatternIdx, int(pattern_idx))
     task.set_pattern(idx)
+
     async with QASClient() as client:
         detail = await client.get_share_detail(task)
         task.detail_info = detail
@@ -132,30 +126,40 @@ async def _(task: TaskItem = Task()):
     await qas.finish(f"🎉 添加任务成功 🎉\n{task}")
 
 
+# https://pan.quark.cn/s/92ddebc99a01
+@on_regex(f"{SHARE_URL_REGEX}", permission=SUPERUSER, priority=10).handle()
+@handle_exception()
+async def _(matched: re.Match[str] = RegexMatched()):
+    shareurl = matched.group(0)
+    logger.info(f"收到分享链接: {shareurl}")
+    # 询问用户是否使用模版
+
+
 @on_command(("qas", "run"), permission=SUPERUSER).handle()
 @handle_exception()
-async def _():
+async def _(matcher: Matcher):
     async with QASClient() as client:
         async for res in client.run_script():
-            await qas.send(res)
+            await matcher.send(res)
 
 
 @on_command(("qas", "list"), permission=SUPERUSER).handle()
 @handle_exception()
-async def _():
+async def _(matcher: Matcher):
     async with QASClient() as client:
         tasks = await client.list_tasks()
         task_strs = "\n".join(f"{i}. {task.display_simple()}" for i, task in enumerate(tasks, 1))
-        await qas.send(f"当前任务列表:\n{task_strs}")
+        await matcher.send(f"当前任务列表:\n{task_strs}")
 
 
 @on_command(("qas", "del"), permission=SUPERUSER).handle()
 @handle_exception()
-async def _(args: Message = CommandArg()):
+async def _(matcher: Matcher, args: Message = CommandArg()):
     try:
         task_idx = int(args.extract_plain_text())
     except ValueError:
-        await qas.finish("必需指定有效的任务索引")
+        await matcher.finish("必需指定有效的任务索引")
+
     async with QASClient() as client:
         task_name = await client.delete_task(task_idx)
-    await qas.finish(f"删除任务 {task_name} 成功")
+    await matcher.finish(f"删除任务 {task_name} 成功")

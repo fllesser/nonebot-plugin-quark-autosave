@@ -6,7 +6,7 @@ from nonebot.matcher import current_matcher
 
 class QASException(Exception):
     def __init__(self, message: str):
-        super().__init__(f"quark-auto-save: {message}")
+        super().__init__(f"QAS: {message}")
 
 
 def handle_exception():
