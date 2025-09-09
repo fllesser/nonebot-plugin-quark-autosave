@@ -22,6 +22,7 @@ class QASClient:
     async def delete_task(self, task_idx: int):
         """删除任务"""
         data = await self.get_data()
+
         if 0 < task_idx <= len(data.tasklist):
             task_item = data.tasklist.pop(task_idx - 1)
             await self.update(data)
@@ -44,6 +45,7 @@ class QASClient:
         async with self.client.stream("POST", "/run_script_now", json={}) as response:
             response.raise_for_status()
             task_res: list[str] = []
+
             async for chunk in response.aiter_lines():
                 if chunk := chunk.removeprefix("data:").replace("=", "").strip():
                     if chunk.startswith("#") and len(task_res) > 0:
@@ -53,6 +55,7 @@ class QASClient:
                     if chunk.startswith("分享链接"):
                         continue
                     task_res.append(chunk)
+
             if len(task_res) > 0:
                 yield "\n".join(task_res)
 
@@ -67,6 +70,7 @@ class QASClient:
             shareurl=task.shareurl,
             task=task,
         )
+
         response = await self.client.post("/get_share_detail", json=model_dump(payload))
         response.raise_for_status()
         return DetailInfo(**self._check_response(response))
