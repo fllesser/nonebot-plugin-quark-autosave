@@ -89,6 +89,10 @@ async def _(pattern_idx: Literal["0", "1", "2", "3", "4"], task: TaskItem = Task
     async with QASClient() as client:
         detail = await client.get_share_detail(task)
         task.detail_info = detail
+
+    if "#/list/share/" in task.shareurl:
+        qas.set_path_arg("inner", "0")
+    else:
         await qas.send(f"转存预览:\n{task.display_file_list()}")
 
 

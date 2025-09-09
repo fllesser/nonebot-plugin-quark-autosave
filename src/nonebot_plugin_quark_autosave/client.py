@@ -1,6 +1,7 @@
 from typing import Any
 
 import httpx
+from nonebot import logger
 from nonebot.compat import model_dump
 
 from .config import plugin_config
@@ -82,8 +83,11 @@ class QASClient:
 
     def _check_response(self, response: httpx.Response) -> dict[str, Any]:
         if response.status_code >= 500:
-            raise QASException(f"服务端错误: {response.status_code}")
+            response.raise_for_status()
         resp_json = response.json()
         if bool(resp_json.get("success")):
             return resp_json.get("data", resp_json)
-        raise QASException(resp_json.get("message") or "未知错误")
+        logger.error(f"status: {response.status_code}, response: {resp_json}")
+        raise QASException(
+            resp_json.get("message") or resp_json.get("data", {"error": "未知错误"}).get("error", "未知错误")
+        )
