@@ -11,13 +11,13 @@ ENV TELEGRAM_BOT_TOKEN=[] \
     QAS_TOKEN="123456789"
 
 RUN cat > .env.prod <<EOF
-    PORT=${PORT}
-    SUPERUSERS=${SUPERUSERS}
-    COMMAND_START=["", "/"]
-    telegram_bots=[{"token": "${TELEGRAM_BOT_TOKEN}"}]
-    qas_endpoint=${QAS_ENDPOINT}
-    qas_token=${QAS_TOKEN}
-    EOF
+PORT=${PORT}
+SUPERUSERS=${SUPERUSERS}
+COMMAND_START=["", "/"]
+telegram_bots=[{"token": "${TELEGRAM_BOT_TOKEN}"}]
+qas_endpoint=${QAS_ENDPOINT}
+qas_token=${QAS_TOKEN}
+EOF
 
 COPY requirements.txt bot.py ./
 
