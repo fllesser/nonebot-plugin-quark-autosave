@@ -10,6 +10,9 @@ on:
       - "tests/**"
       - "pyproject.toml"
       - "uv.lock"
+      - "compose.yml"
+      - "Dockerfile"
+      - ".dockerignore"
 
 jobs:
       
