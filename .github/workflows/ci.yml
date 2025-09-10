@@ -36,7 +36,7 @@ jobs:
         # os: [ubuntu-latest, windows-latest, macos-latest]
         pydantic-version: [pydantic-v1, pydantic-v2]
     env:
-      # OS: ${{ matrix.os }}
+      UV_NO_SYNC: 1
       PYTHON_VERSION: ${{ matrix.python-version }}
       PYDANTIC_VERSION: ${{ matrix.pydantic-version }}
 
@@ -51,12 +51,10 @@ jobs:
           version: "latest"
 
       - name: Install Dependencies for test group
-        run: uv sync --no-dev --group ${{ matrix.pydantic-version }}
+        run: uv sync --no-dev --group ${{ matrix.pydantic-version }} --locked
 
       - name: Run Pytest
-        run: uv run --no-sync pytest --cov=src --cov-report xml --junitxml=./junit.xml -n auto
-          # uv run --no-sync poe test
-          # uv pip show pydantic
+        run: uv run poe test
 
       - name: Upload test results to Codecov
         if: ${{ !cancelled() }}
