@@ -16,6 +16,8 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 
 COPY . .
 
+RUN echo "telegram_bots=$telegram_bots" > .env.prod
+
 # RUN uv tool run --from nb-cli nb orm upgrade
 EXPOSE 8080
 

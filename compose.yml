@@ -6,7 +6,10 @@ services:
             context: .
             dockerfile: Dockerfile
         container_name: quark-bot-nonebot
-
+        environment:
+          TZ: Asia/Shanghai
+          LANG: en_US.UTF-8
+          telegram_bots: '[{"token": "1234567890"}]'
         volumes:
           - ./data:/app/data
           - ./config:/app/config
