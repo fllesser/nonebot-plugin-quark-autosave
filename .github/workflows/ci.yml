@@ -4,15 +4,13 @@ on:
   push:
     branches:
       - master
+  workflow_dispatch:
   pull_request:
     paths:
       - "src/**"
       - "tests/**"
       - "pyproject.toml"
       - "uv.lock"
-      - "compose.yml"
-      - "Dockerfile"
-      - ".dockerignore"
 
 jobs:
       
