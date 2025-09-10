@@ -10,12 +10,14 @@ ENV TELEGRAM_BOT_TOKEN=[] \
     QAS_ENDPOINT="http://quark-auto-save:5005" \
     QAS_TOKEN="123456789"
 
-RUN echo "PORT=${PORT}\n" > .env.prod && \
-    echo "SUPERUSERS=${SUPERUSERS}\n" >> .env.prod && \
-    echo "COMMAND_START=["", "/"]\n" >> .env.prod && \
-    echo "telegram_bots=[{"token": "${TELEGRAM_BOT_TOKEN}"}]\n" >> .env.prod && \
-    echo "qas_endpoint=${QAS_ENDPOINT}\n" >> .env.prod && \
-    echo "qas_token=${QAS_TOKEN}\n" >> .env.prod
+RUN cat > .env.prod <<EOF
+    PORT=${PORT}
+    SUPERUSERS=${SUPERUSERS}
+    COMMAND_START=["", "/"]
+    telegram_bots=[{"token": "${TELEGRAM_BOT_TOKEN}"}]
+    qas_endpoint=${QAS_ENDPOINT}
+    qas_token=${QAS_TOKEN}
+    EOF
 
 COPY requirements.txt bot.py ./
 
