@@ -27,7 +27,7 @@ test = [
   "pytest-asyncio>=1.1.0,<1.2.0",
   "poethepoet>=0.36.0",
   "nonebot-adapter-onebot>=2.4.6,<3.0.0",
-  "pytest-cov>=6.3.0",
+  "pytest-cov>=7.0.0",
   "poethepoet>=0.36.0",
   "respx>=0.22.0",
 ]
@@ -59,17 +59,20 @@ plugins = ["nonebot_plugin_quark_autosave"]
 
 [tool.poe.tasks]
 test = "pytest --cov=src --cov-report xml --junitxml=./junit.xml -n auto"
-bump = "uv tool run bump-my-version bump"
-show-bump = "uv tool run bump-my-version show-bump"
+bump = "bump-my-version bump"
+show-bump = "bump-my-version show-bump"
 
 [tool.coverage.report]
 show_missing = true # 相当于 --cov-report=term-missing:cite[1]
-omit = ["src/nonebot_plugin_quark_autosave/client.py"]
+omit = [
+  "src/nonebot_plugin_quark_autosave/client.py",
+  "src/nonebot_plugin_quark_autosave/exception.py",
+]
 exclude_lines = [
   "raise NotImplementedError",
   "if TYPE_CHECKING:",
   "@overload",
-  "except ImportError:",
+  "except",
 ]
 
 [tool.pytest.ini_options]
