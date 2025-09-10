@@ -17,11 +17,9 @@ RUN echo "PORT=${PORT}\n" > .env.prod && \
     echo "qas_endpoint=${QAS_ENDPOINT}\n" >> .env.prod && \
     echo "qas_token=${QAS_TOKEN}\n" >> .env.prod
 
-COPY requirements.txt .
+COPY requirements.txt bot.py ./
 
 RUN uv venv && uv pip install -r requirements.txt
-
-COPY bot.py .
 
 EXPOSE ${PORT}
 
