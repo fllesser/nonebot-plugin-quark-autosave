@@ -1,0 +1,10 @@
+.venv/
+.git/
+cache/
+config/
+data/
+.pre-commit-config.yaml
+.gitignore
+.dockerignore
+Dockerfile
+compose.yml

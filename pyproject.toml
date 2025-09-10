@@ -51,10 +51,7 @@ conflicts = [
 ]
 
 [tool.nonebot]
-adapters = [
-  { name = "Onebot v11", module_name = "nonebot.adapters.onebot.v11" },
-  { name = "Telegram", module_name = "nonebot.adapters.telegram" },
-]
+adapters = [{ name = "Telegram", module_name = "nonebot.adapters.telegram" }]
 plugins = ["nonebot_plugin_quark_autosave"]
 
 [tool.poe.tasks]

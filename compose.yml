@@ -1,0 +1,69 @@
+name: quark-bot
+
+services:
+    nonebot:
+        image: ghcr.io/fllesser/nonebot-plugin-quark-autosave/quarkbot:latest
+        container_name: quark-bot-nonebot
+        environment:
+          # PORT: 8080
+          # 以下必填
+          SUPERUSERS: '["1234567890"]'
+          TELEGRAM_BOT_TOKEN: 1234567890
+          QAS_ENDPOINT: http://quark-auto-save:5005
+          QAS_TOKEN: 1234567890 # 前往 quark-auto-save webui 系统配置下拉 API 处获取
+        restart: unless-stopped
+        depends_on: [quark-auto-save]
+        networks: [quark-bot-network]
+
+    smartstrm:
+      image: cp0204/smartstrm:latest
+      container_name: smartstrm
+      restart: unless-stopped
+      networks: [quark-bot-network]
+      ports:
+        - 5006:5006
+      volumes:
+        - ./smartstrm/config:/app/config # 挂载配置目录
+        - ./smartstrm/logs:/app/logs # 挂载日志目录，可选
+        - ./smartstrm/strm:/strm # 挂载 STRM 生成目录
+      environment:
+        - PORT=5006 # 管理端口，可选
+        - ADMIN_USERNAME=admin # 管理用户名
+        - ADMIN_PASSWORD=password # 管理用户密码
+
+    quark-auto-save:
+      image: cp0204/quark-auto-save:latest
+      container_name: quark-auto-save
+      ports:
+        - 5005:5005
+      restart: unless-stopped
+      networks: [quark-bot-network]
+      environment:
+        PORT: 5005
+        WEBUI_USERNAME: "admin"
+        WEBUI_PASSWORD: "password"
+      volumes:
+        - ./quark-auto-save/config:/app/config
+        - ./quark-auto-save/media:/media
+
+    emby:
+      image: amilys/embyserver:latest
+      container_name: emby
+      networks: [quark-bot-network]
+      ports:
+        - 8096:8096
+      environment:
+        - TZ=Asia/Shanghai
+      volumes:
+        - ./emby/config:/config
+        - ./smartstrm/strm:/media  # ⚠️ 必须匹配SmartSTRM输出路径
+      devices:
+        - /dev/dri:/dev/dri  # ✅ 硬件转码支持
+      restart: always
+      privileged: true  # 🔑 关键权限
+
+networks:
+  quark-bot-network:
+    name: quark-bot-network
+    driver: bridge
+
