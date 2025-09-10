@@ -19,7 +19,7 @@ RUN echo "PORT=${PORT}\n" >> .env.prod && \
 
 COPY requirements.txt .
 
-RUN uv pip install -r requirements.txt
+RUN uv venv && uv pip install -r requirements.txt
 
 COPY bot.py .
 
