@@ -1,0 +1,22 @@
+name: quark-bot
+
+services:
+    nonebot:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: quark-bot-nonebot
+
+        volumes:
+          - ./data:/app/data
+          - ./config:/app/config
+          - ./cache:/app/cache
+        restart: always
+        networks:
+            - quark-bot-network
+
+networks:
+  quark-network:
+    name: quark-bot-network
+    driver: bridge
+
