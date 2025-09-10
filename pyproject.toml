@@ -32,8 +32,7 @@ test = [
   "respx>=0.22.0",
 ]
 
-
-adapter_telegram = ["nonebot-adapter-telegram>=0.1.0b20"]
+telebot = ["nonebot2[httpx]", "nonebot-adapter-telegram>=0.1.0b20"]
 
 pydantic-v1 = ["pydantic>=1.10.0,<2.0.0"]
 pydantic-v2 = ["pydantic>2.0.0,<3.0.0"]
@@ -46,7 +45,7 @@ conflicts = [
   [
     { group = "pydantic-v1" },
     { group = "pydantic-v2" },
-    { group = "adapter_telegram" },
+    { group = "telebot" },
   ],
 ]
 
@@ -58,6 +57,7 @@ plugins = ["nonebot_plugin_quark_autosave"]
 test = "pytest --cov=src --cov-report xml --junitxml=./junit.xml -n auto"
 bump = "bump-my-version bump"
 show-bump = "bump-my-version show-bump"
+freeze = { shell = "uv sync --no-install-project --no-dev --no-group test --group telebot && uv pip freeze > requirements.txt" }
 
 [tool.coverage.report]
 show_missing = true # 相当于 --cov-report=term-missing:cite[1]
