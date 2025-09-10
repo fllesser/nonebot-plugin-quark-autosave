@@ -15,8 +15,6 @@ jobs:
   build:
     name: "build image"
     runs-on: ubuntu-latest
-    env:
-      UV_NO_SYNC: 1
     steps:
       - uses: actions/checkout@v5
 
