@@ -11,9 +11,13 @@ ENV TELEGRAM_BOT_TOKEN=[] \
     QAS_TOKEN="123456789"
 
 
-COPY requirements.txt bot.py start.sh ./
+COPY requirements.txt .
 
 RUN uv venv && uv pip install -r requirements.txt
+
+COPY bot.py start.sh ./
+
+RUN chmod +x start.sh
 
 EXPOSE ${PORT}
 
