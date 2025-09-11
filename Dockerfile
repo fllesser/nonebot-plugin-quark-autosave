@@ -1,5 +1,5 @@
 # 构建阶段
-FROM ghcr.io/astral-sh/uv:0.8.14-python3.12-bookworm
+FROM ghcr.io/astral-sh/uv:0.8.17-python3.12-bookworm
 
 # RUN apt-get update && apt-get install -y git curl ffmpeg && apt-get clean && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
