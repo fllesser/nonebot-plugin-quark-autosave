@@ -45,5 +45,5 @@ jobs:
           platforms: linux/amd64,linux/arm64
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha,scope=quarkbot
+          # cache-from: type=gha,scope=quarkbot
           cache-to: type=gha,mode=min,scope=quarkbot
