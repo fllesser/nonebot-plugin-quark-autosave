@@ -10,17 +10,8 @@ ENV TELEGRAM_BOT_TOKEN=[] \
     QAS_ENDPOINT="http://quark-auto-save:5005" \
     QAS_TOKEN="123456789"
 
-RUN cat > .env.prod <<EOF
-DRIVER=~httpx
-PORT=${PORT}
-SUPERUSERS=${SUPERUSERS}
-COMMAND_START=["", "/"]
-telegram_bots=[{"token": "${TELEGRAM_BOT_TOKEN}"}]
-qas_endpoint=${QAS_ENDPOINT}
-qas_token=${QAS_TOKEN}
-EOF
 
-COPY requirements.txt bot.py ./
+COPY requirements.txt bot.py start.sh ./
 
 RUN uv venv && uv pip install -r requirements.txt
 
@@ -28,4 +19,4 @@ EXPOSE ${PORT}
 
 ENV TZ=Asia/Shanghai
 
-CMD ["uv", "run", "bot.py"]
+CMD ["/bin/bash", "start.sh"]
