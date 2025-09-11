@@ -119,7 +119,7 @@
 
 ### 🎨 Docker
 - TELEGRAM_BOT_TOKEN: 机器人 token 获取方式: [@BotFather](https://t.me/BotFather)
-- SUPERUSER: 主人 ID 获取方式: [@userinfobot](https://t.me/userinfobot)
+- SUPERUSER: 超级用户 ID 获取方式: [@userinfobot](https://t.me/userinfobot)
 
 ```sh
 docker run -d \
@@ -134,6 +134,8 @@ docker run -d \
   ghcr.io/fllesser/quarkbot:latest
 ```
 
+单独使用
+
 ```yml
 services:
     nonebot:
@@ -146,7 +148,7 @@ services:
           QAS_ENDPOINT: http://quark-auto-save:5005
           QAS_TOKEN: 1234567890           # 前往 quark-auto-save webui 系统配置下拉 API 处获取
         restart: unless-stopped
-        depends_on: [quark-auto-save]
-        networks: [quark-bot-network]
+        network_mode: bridge
 
 ```
+quark-auto-save, smartstrm, emby-server, quarkbot 配套 compose.yml 前往 [compose.yml](https://github.com/fllesser/nonebot-plugin-quark-autosave/blob/master/compose.yml)
