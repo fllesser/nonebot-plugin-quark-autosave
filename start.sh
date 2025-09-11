@@ -1,7 +1,7 @@
 cat > .env.prod <<EOF
 DRIVER=~httpx
 PORT=${PORT}
-SUPERUSERS=${SUPERUSERS}
+SUPERUSERS=["${SUPERUSERS}"]
 COMMAND_START=["", "/"]
 telegram_bots=[{"token": "${TELEGRAM_BOT_TOKEN}"}]
 qas_endpoint=${QAS_ENDPOINT}

@@ -5,10 +5,9 @@ services:
         image: ghcr.io/fllesser/nonebot-plugin-quark-autosave/quarkbot:latest
         container_name: quark-bot-nonebot
         environment:
-          # PORT: 8080
-          # 以下必填
-          SUPERUSERS: '["1234567890"]'
-          TELEGRAM_BOT_TOKEN: 1234567890
+          PORT: 8080
+          SUPERUSER: 1234567890
+          TELEGRAM_BOT_TOKEN: bot_token
           QAS_ENDPOINT: http://quark-auto-save:5005
           QAS_TOKEN: 1234567890 # 前往 quark-auto-save webui 系统配置下拉 API 处获取
         restart: unless-stopped

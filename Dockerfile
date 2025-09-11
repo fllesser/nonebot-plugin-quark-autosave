@@ -5,7 +5,7 @@ FROM ghcr.io/astral-sh/uv:0.8.14-python3.12-bookworm
 WORKDIR /app
 
 ENV TELEGRAM_BOT_TOKEN=[] \
-    SUPERUSERS=[] \
+    SUPERUSER="123456789" \
     PORT=8080 \
     QAS_ENDPOINT="http://quark-auto-save:5005" \
     QAS_TOKEN="123456789"
@@ -19,8 +19,6 @@ COPY pyproject.toml uv.lock bot.py start.sh README.md ./
 COPY src/ ./src/
 
 RUN chmod +x start.sh
-
-RUN ls -al
 
 RUN uv sync --no-dev --no-group test --group telebot --locked
 
