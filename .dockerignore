@@ -1,10 +1,13 @@
 .venv/
+.github/
 .git/
 cache/
 config/
 data/
+tests/
 .pre-commit-config.yaml
 .gitignore
 .dockerignore
+.env.test
 Dockerfile
 compose.yml
