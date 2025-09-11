@@ -15,8 +15,6 @@ COPY requirements.txt .
 
 RUN uv venv && uv pip install -r requirements.txt
 
-COPY . .
-
 RUN chmod +x start.sh
 
 RUN uv sync --no-dev --no-group test --group telebot --locked
