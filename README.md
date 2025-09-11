@@ -117,5 +117,16 @@
 | qas.list | 主人  |  否   | 私聊  |             查看自动转存任务列表             |
 | qas.del  | 主人  |  否   | 私聊  | 指定索引(从 qas.list 中获取)删除自动转存任务 |
 
-### 🎨 效果图
-如果有效果图的话
+### 🎨 Docker
+```sh
+docker run -d \
+  --name quark-bot-nonebot \
+  -p 3344:8080 \
+  -e SUPERUSERS='["123123"]' \
+  -e TELEGRAM_BOT_TOKEN=7123123 \
+  -e QAS_ENDPOINT=http://debian:5005 \
+  -e QAS_TOKEN=fbd7101899 \
+  --restart unless-stopped \
+  --network bridge \
+  ghcr.io/fllesser/quarkbot:latest
+```
