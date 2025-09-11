@@ -15,13 +15,14 @@ COPY requirements.txt .
 
 RUN uv venv && uv pip install -r requirements.txt
 
-COPY . .
+COPY pyproject.toml uv.lock bot.py start.sh README.md ./
+COPY src/ ./src/
 
 RUN chmod +x start.sh
 
-RUN uv sync --no-dev --no-group test --group telebot --locked
+RUN ls -al
 
-EXPOSE ${PORT}
+RUN uv sync --no-dev --no-group test --group telebot --locked
 
 ENV TZ=Asia/Shanghai
 

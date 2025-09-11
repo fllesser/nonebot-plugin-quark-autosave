@@ -15,6 +15,8 @@ jobs:
   build:
     name: "build image"
     runs-on: ubuntu-latest
+    env:
+      DOCKER_BUILDKIT: 1
     steps:
       - uses: actions/checkout@v5
 
@@ -32,7 +34,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ghcr.io/${{ github.repository }}/quarkbot
+          images: ghcr.io/fllesser/quarkbot
           tags: |
             type=raw,value=latest,enable={{is_default_branch}}
             type=ref,event=branch
@@ -45,5 +47,5 @@ jobs:
           platforms: linux/amd64,linux/arm64
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          # cache-from: type=gha,scope=quarkbot
+          cache-from: type=gha,scope=quarkbot
           cache-to: type=gha,mode=min,scope=quarkbot
