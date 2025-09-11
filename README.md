@@ -118,15 +118,35 @@
 | qas.del  | 主人  |  否   | 私聊  | 指定索引(从 qas.list 中获取)删除自动转存任务 |
 
 ### 🎨 Docker
+- TELEGRAM_BOT_TOKEN: 机器人 token 获取方式: [@BotFather](https://t.me/BotFather)
+- SUPERUSER: 主人 ID 获取方式: [@userinfobot](https://t.me/userinfobot)
+
 ```sh
 docker run -d \
-  --name quark-bot-nonebot \
-  -p 3344:8080 \
-  -e SUPERUSERS='["123123"]' \
-  -e TELEGRAM_BOT_TOKEN=7123123 \
+  --name quark-bot \
+  -e PORT=8080 \
+  -e SUPERUSER=1234567890 \
+  -e TELEGRAM_BOT_TOKEN=bot_token \
   -e QAS_ENDPOINT=http://debian:5005 \
-  -e QAS_TOKEN=fbd7101899 \
+  -e QAS_TOKEN=3237101899 \
   --restart unless-stopped \
   --network bridge \
   ghcr.io/fllesser/quarkbot:latest
+```
+
+```yml
+services:
+    nonebot:
+        image: ghcr.io/fllesser/quarkbot:latest
+        container_name: quark-bot
+        environment:
+          PORT: 8080
+          SUPERUSER: 1234567890           
+          TELEGRAM_BOT_TOKEN: bot_token  
+          QAS_ENDPOINT: http://quark-auto-save:5005
+          QAS_TOKEN: 1234567890           # 前往 quark-auto-save webui 系统配置下拉 API 处获取
+        restart: unless-stopped
+        depends_on: [quark-auto-save]
+        networks: [quark-bot-network]
+
 ```
