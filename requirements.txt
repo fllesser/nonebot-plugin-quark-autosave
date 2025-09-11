@@ -14,7 +14,7 @@ idna==3.10
 importlib-metadata==8.7.0
 loguru==0.7.3
 multidict==6.6.4
-nepattern==0.7.7
+nepattern==1.0.1
 nonebot-adapter-telegram==0.1.0b20
 nonebot-plugin-alconna==0.59.4
 nonebot-plugin-waiter==0.8.1
