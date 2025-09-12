@@ -8,12 +8,50 @@ import pytest
 import respx
 
 
-@respx.mock(assert_all_called=True, base_url="http://debian:5005")
-@pytest.mark.asyncio
-async def test_add_task(app: App, respx_mock: respx.MockRouter):
-    from nonebot_plugin_quark_autosave.model import DetailInfo, MagicRegex, TaskItem
+def tasks_example():
+    from nonebot_plugin_quark_autosave.model import TaskItem
 
-    task = TaskItem.template("基地第三季", "https://pan.quark.cn/s/e06704643151")
+    return [
+        TaskItem.template("戏台", "https://pan.quark.cn/s/cd50a720b85f", pattern_idx=1),
+        TaskItem.template("冰女", "https://pan.quark.cn/s/3ca9c76abd12", pattern_idx=2),
+        TaskItem.template("基地第三季", "https://pan.quark.cn/s/e06704643151", pattern_idx=3),
+    ]
+
+
+@pytest.fixture(scope="session", autouse=True)
+@respx.mock(base_url="http://quark-auto-save:5005")
+def mock_qas_server():
+    from nonebot_plugin_quark_autosave.model import AutosaveData
+
+    tasks = tasks_example()
+
+    respx.get("/data").mock(
+        return_value=httpx.Response(
+            200,
+            json={
+                "success": True,
+                "data": model_dump(
+                    AutosaveData(
+                        cookie=[],
+                        api_token="",
+                        crontab="",
+                        tasklist=tasks,
+                        magic_regex={},
+                        source={},
+                        push_config={},
+                        plugins={},
+                        task_plugins_config_default={},
+                    )
+                ),
+            },
+        )
+    )
+
+
+@respx.mock
+@pytest.mark.asyncio
+async def test_add_task(app: App):
+    from nonebot_plugin_quark_autosave.model import DetailInfo, MagicRegex, TaskItem
 
     detail_info_json = {
         "is_owner": 1,
@@ -48,9 +86,7 @@ async def test_add_task(app: App, respx_mock: respx.MockRouter):
     }
     detail_info = DetailInfo(**detail_info_json)
 
-    task.detail_info = detail_info
-
-    respx_mock.post("/get_share_detail").mock(
+    respx.post("/get_share_detail").mock(
         return_value=httpx.Response(
             200,
             json={
@@ -72,6 +108,9 @@ async def test_add_task(app: App, respx_mock: respx.MockRouter):
             event,
             f"请输入模式索引: \n{MagicRegex.display_patterns_alias()}",
         )
+
+        task = TaskItem.template("基地第三季", "https://pan.quark.cn/s/e06704643151")
+        task.detail_info = detail_info
 
         event = fake_private_message_event_v11(message="0", user_id=SUPER_USER_ID)
         ctx.receive_event(bot, event)
@@ -109,7 +148,7 @@ async def test_add_task(app: App, respx_mock: respx.MockRouter):
 
         event = fake_private_message_event_v11(message="67", user_id=SUPER_USER_ID)
         task.runweek = [6, 7]
-        respx_mock.post("/api/add_task").mock(
+        respx.post("/api/add_task").mock(
             return_value=httpx.Response(
                 200,
                 json={
@@ -125,64 +164,34 @@ async def test_add_task(app: App, respx_mock: respx.MockRouter):
         )
 
 
-def mock_data(respx_mock: respx.MockRouter):
-    from nonebot_plugin_quark_autosave.model import AutosaveData, TaskItem
-
-    tasks = [
-        TaskItem.template("基地第一季", "https://pan.quark.cn/s/e06704643151", pattern_idx=1),
-        TaskItem.template("基地第二季", "https://pan.quark.cn/s/e06704643151", pattern_idx=2),
-        TaskItem.template("基地第三季", "https://pan.quark.cn/s/e06704643151", pattern_idx=3),
-    ]
-
-    respx_mock.get("/data").mock(
-        return_value=httpx.Response(
-            200,
-            json={
-                "success": True,
-                "data": model_dump(
-                    AutosaveData(
-                        cookie=[],
-                        api_token="",
-                        crontab="",
-                        tasklist=tasks,
-                        magic_regex={},
-                        source={},
-                        push_config={},
-                        plugins={},
-                        task_plugins_config_default={},
-                    )
-                ),
-            },
-        )
-    )
-
-    return tasks
-
-
-@respx.mock(assert_all_called=True, base_url="http://debian:5005")
-@pytest.mark.asyncio
-async def test_list_tasks(app: App, respx_mock: respx.MockRouter):
-    tasks = mock_data(respx_mock)
+@respx.mock
+async def test_list_tasks(app: App):
+    tasks = tasks_example()
+    input = "qas.list"
+    task_strs = "\n".join(f"{i}. {task.display_simple()}" for i, task in enumerate(tasks, 1))
+    output = f"当前任务列表:\n{task_strs}"
 
     async with app.test_matcher() as ctx:
         adapter = get_adapter(Adapter)
         bot = ctx.create_bot(base=Bot, adapter=adapter)
 
-        event = fake_private_message_event_v11(message="qas.list", user_id=SUPER_USER_ID)
+        event = fake_private_message_event_v11(message=input, user_id=SUPER_USER_ID)
         ctx.receive_event(bot, event)
 
-        task_strs = "\n".join(f"{i}. {task.display_simple()}" for i, task in enumerate(tasks, 1))
         ctx.should_call_send(
             event,
-            f"当前任务列表:\n{task_strs}",
+            output,
         )
 
 
-@respx.mock(assert_all_called=True, base_url="http://debian:5005")
-async def test_delete_task(app: App, respx_mock: respx.MockRouter):
-    tasks = mock_data(respx_mock)
+@respx.mock
+async def test_delete_task(app: App):
+    tasks = tasks_example()
+    cmd_arg = 1
+    input = f"qas.del {cmd_arg}"
+    output = f"删除任务 {tasks[cmd_arg - 1].taskname} 成功"
 
-    respx_mock.post("/update").mock(
+    respx.post("/update").mock(
         return_value=httpx.Response(
             200,
             json={
@@ -196,21 +205,21 @@ async def test_delete_task(app: App, respx_mock: respx.MockRouter):
         adapter = get_adapter(Adapter)
         bot = ctx.create_bot(base=Bot, adapter=adapter)
 
-        event = fake_private_message_event_v11(message="qas.del 1", user_id=SUPER_USER_ID)
+        event = fake_private_message_event_v11(message=input, user_id=SUPER_USER_ID)
         ctx.receive_event(bot, event)
 
-        ctx.should_call_send(
-            event,
-            f"删除任务 {tasks[0].taskname} 成功",
-        )
+        ctx.should_call_send(event, output)
 
 
-@respx.mock(assert_all_called=True, base_url="http://debian:5005")
-async def test_run_script(app: App, respx_mock: respx.MockRouter):
-    respx_mock.post("/run_script_now").mock(
+@respx.mock
+async def test_run_script(app: App):
+    input = "qas.run"
+    output = "运行成功"
+
+    respx.post("/run_script_now").mock(
         return_value=httpx.Response(
             200,
-            text="运行成功",
+            text=output,
         )
     )
 
@@ -218,7 +227,32 @@ async def test_run_script(app: App, respx_mock: respx.MockRouter):
         adapter = get_adapter(Adapter)
         bot = ctx.create_bot(base=Bot, adapter=adapter)
 
-        event = fake_private_message_event_v11(message="qas.run", user_id=SUPER_USER_ID)
+        event = fake_private_message_event_v11(message=input, user_id=SUPER_USER_ID)
         ctx.receive_event(bot, event)
 
-        ctx.should_call_send(event, "运行成功")
+        ctx.should_call_send(event, output)
+
+
+@respx.mock
+async def test_run_script_with_index(app: App):
+    cmd_arg = 1
+    input = f"qas.run {cmd_arg}"
+    output = f"任务 {cmd_arg} 运行成功"
+    task_idx = cmd_arg - 1
+
+    tasks = tasks_example()
+    respx.post("/run_script_now", json={"tasklist": [model_dump(tasks[task_idx])]}).mock(
+        return_value=httpx.Response(
+            200,
+            text=output,
+        )
+    )
+
+    async with app.test_matcher() as ctx:
+        adapter = get_adapter(Adapter)
+        bot = ctx.create_bot(base=Bot, adapter=adapter)
+
+        event = fake_private_message_event_v11(message=input, user_id=SUPER_USER_ID)
+        ctx.receive_event(bot, event)
+
+        ctx.should_call_send(event, output)

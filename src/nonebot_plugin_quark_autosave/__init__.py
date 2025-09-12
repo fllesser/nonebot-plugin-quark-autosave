@@ -141,9 +141,12 @@ async def _(matched: re.Match[str] = RegexMatched()):
 
 @on_command(("qas", "run"), permission=SUPERUSER).handle()
 @handle_exception()
-async def _(matcher: Matcher):
+async def _(matcher: Matcher, args: Message = CommandArg()):
+    task_idx = args.extract_plain_text()
+    task_idx = int(task_idx) if task_idx.isdigit() else None
+
     async with QASClient() as client:
-        async for res in client.run_script():
+        async for res in client.run_script(task_idx):
             await matcher.send(res)
 
 
@@ -159,10 +162,11 @@ async def _(matcher: Matcher):
 @on_command(("qas", "del"), permission=SUPERUSER).handle()
 @handle_exception()
 async def _(matcher: Matcher, args: Message = CommandArg()):
-    try:
-        task_idx = int(args.extract_plain_text())
-    except ValueError:
+    task_idx = args.extract_plain_text()
+    if not task_idx.isdigit():
         await matcher.finish("必需指定有效的任务索引")
+
+    task_idx = int(task_idx)
 
     async with QASClient() as client:
         task_name = await client.delete_task(task_idx)
