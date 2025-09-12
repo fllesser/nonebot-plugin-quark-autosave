@@ -3,6 +3,8 @@ name: Build and upload docker image
 on:
   push:
     branches: [master]
+    tags:
+      - "v*"
   pull_request:
   workflow_dispatch:
 
