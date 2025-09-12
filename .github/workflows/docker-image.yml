@@ -3,8 +3,7 @@ name: Build and upload docker image
 on:
   push:
     branches: [master]
-    tags:
-      - "v*"
+    tags: ["v*"]
   pull_request:
   workflow_dispatch:
 
@@ -37,10 +36,6 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ghcr.io/fllesser/quarkbot
-          tags: |
-            type=raw,value=latest,enable={{is_default_branch}}
-            type=ref,event=branch
-            type=sha,format=long
 
       - name: Build and push
         uses: docker/build-push-action@v6
