@@ -105,6 +105,7 @@ async def test_add_task(app: App):
         adapter = get_adapter(Adapter)
         bot = ctx.create_bot(base=Bot, adapter=adapter)
 
+        # 输入任务名称和分享链接
         event = fake_private_message_event_v11(
             message="qas 基地第三季 https://pan.quark.cn/s/e06704643151", user_id=SUPER_USER_ID
         )
@@ -117,6 +118,7 @@ async def test_add_task(app: App):
         task = TaskItem.template("基地第三季", "https://pan.quark.cn/s/e06704643151")
         task.detail_info = detail_info
 
+        # 输入模式索引
         event = fake_private_message_event_v11(message="0", user_id=SUPER_USER_ID)
         ctx.receive_event(bot, event)
         ctx.should_call_send(
@@ -127,8 +129,9 @@ async def test_add_task(app: App):
             event,
             "是(1)否(0)以二级目录作为视频文件夹",
         )
-        event = fake_private_message_event_v11(message="1", user_id=SUPER_USER_ID)
 
+        # 输入是否以二级目录作为视频文件夹
+        event = fake_private_message_event_v11(message="1", user_id=SUPER_USER_ID)
         ctx.receive_event(bot, event)
         ctx.should_call_send(
             event,
@@ -139,6 +142,7 @@ async def test_add_task(app: App):
             "请输入起始文件索引(注: 只会转存更新时间在起始文件之后的文件)",
         )
 
+        # 输入起始文件索引
         event = fake_private_message_event_v11(message="1", user_id=SUPER_USER_ID)
         task.set_startfid(1)
         ctx.receive_event(bot, event)
@@ -151,6 +155,15 @@ async def test_add_task(app: App):
             "请输入运行周期(1-7), 如 67 代表每周六、日运行",
         )
 
+        # 输入错误的运行周期
+        event = fake_private_message_event_v11(message="运行周期", user_id=SUPER_USER_ID)
+        ctx.receive_event(bot, event)
+        ctx.should_call_send(
+            event,
+            "请输入正确的运行周期",
+        )
+
+        # 输入正确的运行周期
         event = fake_private_message_event_v11(message="67", user_id=SUPER_USER_ID)
         task.runweek = [6, 7]
         respx.post("/api/add_task").mock(
@@ -205,6 +218,20 @@ async def test_delete_task(app: App):
             },
         )
     )
+
+    async with app.test_matcher() as ctx:
+        adapter = get_adapter(Adapter)
+        bot = ctx.create_bot(base=Bot, adapter=adapter)
+
+        event = fake_private_message_event_v11(message=input, user_id=SUPER_USER_ID)
+        ctx.receive_event(bot, event)
+
+        ctx.should_call_send(event, output)
+
+
+async def test_delete_task_without_index(app: App):
+    input = "qas.del"
+    output = "必需指定有效的任务索引"
 
     async with app.test_matcher() as ctx:
         adapter = get_adapter(Adapter)
