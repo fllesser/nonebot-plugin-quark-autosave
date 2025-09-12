@@ -246,7 +246,9 @@ async def test_run_script_with_index(app: App):
     task_idx = cmd_arg - 1
 
     tasks = tasks_example()
-    respx.post("/run_script_now", json={"tasklist": [model_dump(tasks[task_idx])]}).mock(
+    task_in_dict = model_dump(tasks[task_idx])
+    del task_in_dict["runweek"]
+    respx.post("/run_script_now", json={"tasklist": [task_in_dict]}).mock(
         return_value=httpx.Response(
             200,
             text=output,
