@@ -1,4 +1,3 @@
-from datetime import datetime
 from typing import Any, Literal, TypeAlias
 
 from pydantic import BaseModel, Field
@@ -42,10 +41,6 @@ class FileItem(BaseModel):
     file_name_saved: str | None = None
 
     @property
-    def updated_at_str(self) -> str:
-        return datetime.fromtimestamp(self.updated_at).strftime("%Y-%m-%d %H:%M:%S")
-
-    @property
     def regex_result(self) -> str:
         res_name = self.file_name_re or (f"{self.file_name_saved} (已存盘)" if self.file_name_saved else None)
         return f"{self.file_name} -> {res_name}"
@@ -63,9 +58,9 @@ class DetailInfo(BaseModel):
     paths: list[SharePath] = Field(default_factory=list)
     stoken: str
 
-    @property
-    def last_update_file_fid(self) -> str:
-        return max(self.file_list, key=lambda x: x.updated_at).fid
+    # @property
+    # def last_update_file_fid(self) -> str:
+    #     return max(self.file_list, key=lambda x: x.updated_at).fid
 
 
 class MagicRegex(BaseModel):

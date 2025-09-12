@@ -77,9 +77,14 @@ async def test_add_task(app: App):
             "first_file": {},
         },
         "list": [
-            {"fid": "111", "file_name": "1.mp4", "updated_at": 111, "file_name_re": None, "file_name_saved": None},
-            {"fid": "222", "file_name": "2.mp4", "updated_at": 222, "file_name_re": None, "file_name_saved": None},
-            {"fid": "333", "file_name": "3.mp4", "updated_at": 333, "file_name_re": None, "file_name_saved": None},
+            {
+                "fid": f"{i}{i}{i}",
+                "file_name": f"{i}.mp4",
+                "updated_at": i * 1000,
+                "file_name_re": None,
+                "file_name_saved": None,
+            }
+            for i in range(30)
         ],
         "paths": [],
         "stoken": "",
