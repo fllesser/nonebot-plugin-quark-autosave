@@ -117,7 +117,7 @@
 | qas.list | 主人  |  否   | 私聊  |             查看自动转存任务列表             |
 | qas.del  | 主人  |  否   | 私聊  | 指定索引(从 qas.list 中获取)删除自动转存任务 |
 
-## 🫙 Docker
+## 🫙 容器
 - TELEGRAM_BOT_TOKEN: 机器人 token 获取方式: [@BotFather](https://t.me/BotFather)
 - SUPERUSER: 超级用户 ID 获取方式: [@userinfobot](https://t.me/userinfobot)
 
