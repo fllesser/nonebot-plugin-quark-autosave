@@ -8,9 +8,49 @@ import pytest
 import respx
 
 
-@respx.mock(assert_all_called=True, base_url="http://debian:5005")
+def tasks_example():
+    from nonebot_plugin_quark_autosave.model import TaskItem
+
+    return [
+        TaskItem.template("基地第一季", "https://pan.quark.cn/s/e06704643151", pattern_idx=1),
+        TaskItem.template("基地第二季", "https://pan.quark.cn/s/e06704643151", pattern_idx=2),
+        TaskItem.template("基地第三季", "https://pan.quark.cn/s/e06704643151", pattern_idx=3),
+    ]
+
+
+@pytest.fixture(scope="session", autouse=True)
+@respx.mock(base_url="http://quark-auto-save:5005")
+def mock_qas_server():
+    from nonebot_plugin_quark_autosave.model import AutosaveData
+
+    tasks = tasks_example()
+
+    respx.get("/data").mock(
+        return_value=httpx.Response(
+            200,
+            json={
+                "success": True,
+                "data": model_dump(
+                    AutosaveData(
+                        cookie=[],
+                        api_token="",
+                        crontab="",
+                        tasklist=tasks,
+                        magic_regex={},
+                        source={},
+                        push_config={},
+                        plugins={},
+                        task_plugins_config_default={},
+                    )
+                ),
+            },
+        )
+    )
+
+
+@respx.mock
 @pytest.mark.asyncio
-async def test_add_task(app: App, respx_mock: respx.MockRouter):
+async def test_add_task(app: App):
     from nonebot_plugin_quark_autosave.model import DetailInfo, MagicRegex, TaskItem
 
     task = TaskItem.template("基地第三季", "https://pan.quark.cn/s/e06704643151")
@@ -50,7 +90,7 @@ async def test_add_task(app: App, respx_mock: respx.MockRouter):
 
     task.detail_info = detail_info
 
-    respx_mock.post("/get_share_detail").mock(
+    respx.post("/get_share_detail").mock(
         return_value=httpx.Response(
             200,
             json={
@@ -109,7 +149,7 @@ async def test_add_task(app: App, respx_mock: respx.MockRouter):
 
         event = fake_private_message_event_v11(message="67", user_id=SUPER_USER_ID)
         task.runweek = [6, 7]
-        respx_mock.post("/api/add_task").mock(
+        respx.post("/api/add_task").mock(
             return_value=httpx.Response(
                 200,
                 json={
@@ -125,44 +165,10 @@ async def test_add_task(app: App, respx_mock: respx.MockRouter):
         )
 
 
-def mock_data(respx_mock: respx.MockRouter):
-    from nonebot_plugin_quark_autosave.model import AutosaveData, TaskItem
-
-    tasks = [
-        TaskItem.template("基地第一季", "https://pan.quark.cn/s/e06704643151", pattern_idx=1),
-        TaskItem.template("基地第二季", "https://pan.quark.cn/s/e06704643151", pattern_idx=2),
-        TaskItem.template("基地第三季", "https://pan.quark.cn/s/e06704643151", pattern_idx=3),
-    ]
-
-    respx_mock.get("/data").mock(
-        return_value=httpx.Response(
-            200,
-            json={
-                "success": True,
-                "data": model_dump(
-                    AutosaveData(
-                        cookie=[],
-                        api_token="",
-                        crontab="",
-                        tasklist=tasks,
-                        magic_regex={},
-                        source={},
-                        push_config={},
-                        plugins={},
-                        task_plugins_config_default={},
-                    )
-                ),
-            },
-        )
-    )
-
-    return tasks
-
-
-@respx.mock(assert_all_called=True, base_url="http://debian:5005")
+@respx.mock
 @pytest.mark.asyncio
-async def test_list_tasks(app: App, respx_mock: respx.MockRouter):
-    tasks = mock_data(respx_mock)
+async def test_list_tasks(app: App):
+    tasks = tasks_example()
 
     async with app.test_matcher() as ctx:
         adapter = get_adapter(Adapter)
@@ -178,11 +184,9 @@ async def test_list_tasks(app: App, respx_mock: respx.MockRouter):
         )
 
 
-@respx.mock(assert_all_called=True, base_url="http://debian:5005")
-async def test_delete_task(app: App, respx_mock: respx.MockRouter):
-    tasks = mock_data(respx_mock)
-
-    respx_mock.post("/update").mock(
+@respx.mock
+async def test_delete_task(app: App):
+    respx.post("/update").mock(
         return_value=httpx.Response(
             200,
             json={
@@ -191,6 +195,8 @@ async def test_delete_task(app: App, respx_mock: respx.MockRouter):
             },
         )
     )
+
+    tasks = tasks_example()
 
     async with app.test_matcher() as ctx:
         adapter = get_adapter(Adapter)
@@ -205,9 +211,9 @@ async def test_delete_task(app: App, respx_mock: respx.MockRouter):
         )
 
 
-@respx.mock(assert_all_called=True, base_url="http://debian:5005")
-async def test_run_script(app: App, respx_mock: respx.MockRouter):
-    respx_mock.post("/run_script_now").mock(
+@respx.mock
+async def test_run_script(app: App):
+    respx.post("/run_script_now").mock(
         return_value=httpx.Response(
             200,
             text="运行成功",
@@ -219,6 +225,15 @@ async def test_run_script(app: App, respx_mock: respx.MockRouter):
         bot = ctx.create_bot(base=Bot, adapter=adapter)
 
         event = fake_private_message_event_v11(message="qas.run", user_id=SUPER_USER_ID)
+        ctx.receive_event(bot, event)
+
+        ctx.should_call_send(event, "运行成功")
+
+    async with app.test_matcher() as ctx:
+        adapter = get_adapter(Adapter)
+        bot = ctx.create_bot(base=Bot, adapter=adapter)
+
+        event = fake_private_message_event_v11(message="qas.run 1", user_id=SUPER_USER_ID)
         ctx.receive_event(bot, event)
 
         ctx.should_call_send(event, "运行成功")
