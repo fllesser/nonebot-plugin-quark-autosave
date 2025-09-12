@@ -12,8 +12,8 @@ def tasks_example():
     from nonebot_plugin_quark_autosave.model import TaskItem
 
     return [
-        TaskItem.template("基地第一季", "https://pan.quark.cn/s/e06704643151", pattern_idx=1),
-        TaskItem.template("基地第二季", "https://pan.quark.cn/s/e06704643151", pattern_idx=2),
+        TaskItem.template("戏台", "https://pan.quark.cn/s/cd50a720b85f", pattern_idx=1),
+        TaskItem.template("冰女", "https://pan.quark.cn/s/3ca9c76abd12", pattern_idx=2),
         TaskItem.template("基地第三季", "https://pan.quark.cn/s/e06704643151", pattern_idx=3),
     ]
 
@@ -53,8 +53,6 @@ def mock_qas_server():
 async def test_add_task(app: App):
     from nonebot_plugin_quark_autosave.model import DetailInfo, MagicRegex, TaskItem
 
-    task = TaskItem.template("基地第三季", "https://pan.quark.cn/s/e06704643151")
-
     detail_info_json = {
         "is_owner": 1,
         "share": {
@@ -88,8 +86,6 @@ async def test_add_task(app: App):
     }
     detail_info = DetailInfo(**detail_info_json)
 
-    task.detail_info = detail_info
-
     respx.post("/get_share_detail").mock(
         return_value=httpx.Response(
             200,
@@ -112,6 +108,9 @@ async def test_add_task(app: App):
             event,
             f"请输入模式索引: \n{MagicRegex.display_patterns_alias()}",
         )
+
+        task = TaskItem.template("基地第三季", "https://pan.quark.cn/s/e06704643151")
+        task.detail_info = detail_info
 
         event = fake_private_message_event_v11(message="0", user_id=SUPER_USER_ID)
         ctx.receive_event(bot, event)
@@ -166,26 +165,32 @@ async def test_add_task(app: App):
 
 
 @respx.mock
-@pytest.mark.asyncio
 async def test_list_tasks(app: App):
     tasks = tasks_example()
+    input = "qas.list"
+    task_strs = "\n".join(f"{i}. {task.display_simple()}" for i, task in enumerate(tasks, 1))
+    output = f"当前任务列表:\n{task_strs}"
 
     async with app.test_matcher() as ctx:
         adapter = get_adapter(Adapter)
         bot = ctx.create_bot(base=Bot, adapter=adapter)
 
-        event = fake_private_message_event_v11(message="qas.list", user_id=SUPER_USER_ID)
+        event = fake_private_message_event_v11(message=input, user_id=SUPER_USER_ID)
         ctx.receive_event(bot, event)
 
-        task_strs = "\n".join(f"{i}. {task.display_simple()}" for i, task in enumerate(tasks, 1))
         ctx.should_call_send(
             event,
-            f"当前任务列表:\n{task_strs}",
+            output,
         )
 
 
 @respx.mock
 async def test_delete_task(app: App):
+    tasks = tasks_example()
+    cmd_arg = 1
+    input = f"qas.del {cmd_arg}"
+    output = f"删除任务 {tasks[cmd_arg - 1].taskname} 成功"
+
     respx.post("/update").mock(
         return_value=httpx.Response(
             200,
@@ -196,27 +201,25 @@ async def test_delete_task(app: App):
         )
     )
 
-    tasks = tasks_example()
-
     async with app.test_matcher() as ctx:
         adapter = get_adapter(Adapter)
         bot = ctx.create_bot(base=Bot, adapter=adapter)
 
-        event = fake_private_message_event_v11(message="qas.del 1", user_id=SUPER_USER_ID)
+        event = fake_private_message_event_v11(message=input, user_id=SUPER_USER_ID)
         ctx.receive_event(bot, event)
 
-        ctx.should_call_send(
-            event,
-            f"删除任务 {tasks[0].taskname} 成功",
-        )
+        ctx.should_call_send(event, output)
 
 
 @respx.mock
 async def test_run_script(app: App):
+    input = "qas.run"
+    output = "运行成功"
+
     respx.post("/run_script_now").mock(
         return_value=httpx.Response(
             200,
-            text="运行成功",
+            text=output,
         )
     )
 
@@ -224,16 +227,32 @@ async def test_run_script(app: App):
         adapter = get_adapter(Adapter)
         bot = ctx.create_bot(base=Bot, adapter=adapter)
 
-        event = fake_private_message_event_v11(message="qas.run", user_id=SUPER_USER_ID)
+        event = fake_private_message_event_v11(message=input, user_id=SUPER_USER_ID)
         ctx.receive_event(bot, event)
 
-        ctx.should_call_send(event, "运行成功")
+        ctx.should_call_send(event, output)
+
+
+@respx.mock
+async def test_run_script_with_index(app: App):
+    cmd_arg = 1
+    input = f"qas.run {cmd_arg}"
+    output = f"任务 {cmd_arg} 运行成功"
+    task_idx = cmd_arg - 1
+
+    tasks = tasks_example()
+    respx.post("/run_script_now", json={"tasklist": [model_dump(tasks[task_idx])]}).mock(
+        return_value=httpx.Response(
+            200,
+            text=output,
+        )
+    )
 
     async with app.test_matcher() as ctx:
         adapter = get_adapter(Adapter)
         bot = ctx.create_bot(base=Bot, adapter=adapter)
 
-        event = fake_private_message_event_v11(message="qas.run 1", user_id=SUPER_USER_ID)
+        event = fake_private_message_event_v11(message=input, user_id=SUPER_USER_ID)
         ctx.receive_event(bot, event)
 
-        ctx.should_call_send(event, "运行成功")
+        ctx.should_call_send(event, output)
