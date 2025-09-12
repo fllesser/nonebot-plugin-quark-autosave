@@ -82,9 +82,9 @@ class QASClient:
         if task_idx is not None:
             data = await self.get_data()
             task_idx = (task_idx - 1) % len(data.tasklist)
-            task = data.tasklist[task_idx]
-            task.runweek = None
-            payload["tasklist"] = [model_dump(task)]
+            task_in_dict = model_dump(data.tasklist[task_idx])
+            del task_in_dict["runweek"]
+            payload["tasklist"] = [task_in_dict]
 
         async with self.client.stream("POST", "/run_script_now", json=payload) as response:
             response.raise_for_status()
