@@ -1,10 +1,10 @@
 import re
 from typing import Literal, cast
 
-from nonebot import logger, on_command, on_regex, require
+from nonebot import logger, on_command, require  # noqa: F401
 from nonebot.adapters import Message
 from nonebot.matcher import Matcher
-from nonebot.params import CommandArg, Depends, RegexMatched
+from nonebot.params import CommandArg, Depends, RegexMatched  # noqa: F401
 from nonebot.permission import SUPERUSER
 from nonebot.plugin import PluginMetadata, inherit_supported_adapters
 from nonebot.typing import T_State
@@ -131,12 +131,12 @@ async def _(task: TaskItem = Task()):
 
 
 # https://pan.quark.cn/s/92ddebc99a01
-@on_regex(f"{SHARE_URL_REGEX}", permission=SUPERUSER, priority=10).handle()
-@handle_exception()
-async def _(matched: re.Match[str] = RegexMatched()):
-    shareurl = matched.group(0)
-    logger.info(f"收到分享链接: {shareurl}")
-    # 询问用户是否使用模版
+# @on_regex(f"{SHARE_URL_REGEX}", permission=SUPERUSER, priority=10).handle()
+# @handle_exception()
+# async def _(matched: re.Match[str] = RegexMatched()):
+#     shareurl = matched.group(0)
+#     logger.info(f"收到分享链接: {shareurl}")
+#     # 询问用户是否使用模版
 
 
 @on_command(("qas", "run"), permission=SUPERUSER).handle()
