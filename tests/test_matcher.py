@@ -244,6 +244,21 @@ async def test_delete_task_without_index(app: App):
 
 
 @respx.mock
+async def test_delete_task_with_invalid_index(app: App):
+    input = "qas.del 1000"
+    output = "QAS: 任务索引 1000 无效"
+
+    async with app.test_matcher() as ctx:
+        adapter = get_adapter(Adapter)
+        bot = ctx.create_bot(base=Bot, adapter=adapter)
+
+        event = fake_private_message_event_v11(message=input, user_id=SUPER_USER_ID)
+        ctx.receive_event(bot, event)
+
+        ctx.should_call_send(event, output)
+
+
+@respx.mock
 async def test_run_script(app: App):
     input = "qas.run"
     output = (
