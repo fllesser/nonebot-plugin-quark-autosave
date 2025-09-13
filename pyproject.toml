@@ -60,15 +60,12 @@ freeze = { shell = "uv sync --no-install-project --no-dev --no-group test --grou
 
 [tool.coverage.report]
 show_missing = true # 相当于 --cov-report=term-missing:cite[1]
-omit = [
-  "src/nonebot_plugin_quark_autosave/client.py",
-  "src/nonebot_plugin_quark_autosave/exception.py",
-]
+omit = ["tests/*", "bot.py"]
 exclude_lines = [
   "raise NotImplementedError",
   "if TYPE_CHECKING:",
   "@overload",
-  "class Addition"
+  "class Addition",
 ]
 
 [tool.pytest.ini_options]

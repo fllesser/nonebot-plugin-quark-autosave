@@ -246,7 +246,23 @@ async def test_delete_task_without_index(app: App):
 @respx.mock
 async def test_run_script(app: App):
     input = "qas.run"
-    output = "运行成功"
+    output = (
+        "🧩 载入插件\n"
+        "SmartStrm 触发任务: 连接成功 v0.0.7\n"
+        "转存账号: 安谧的老虎\n"
+        "#1------------------\n"
+        "任务名称: 基地第三季\n"
+        "分享链接: https://pan.quark.cn/s/e06704643151#/list/share/4afa4cd5bf0e4e7bb1a2ccef8f094d74\n"
+        "保存路径: /夸克自动转存/基地3\n"
+        "正则匹配: tv_regex\n"
+        "运行周期: WK[5] ~\n"
+    )
+
+    # 期望发送
+    hoped_send = [
+        "🧩 载入插件\nSmartStrm 触发任务: 连接成功 v0.0.7\n转存账号: 安谧的老虎",
+        "任务名称: 基地第三季\n保存路径: /夸克自动转存/基地3\n正则匹配: tv_regex\n运行周期: WK[5] ~",
+    ]
 
     respx.post("/run_script_now").mock(
         return_value=httpx.Response(
@@ -261,8 +277,8 @@ async def test_run_script(app: App):
 
         event = fake_private_message_event_v11(message=input, user_id=SUPER_USER_ID)
         ctx.receive_event(bot, event)
-
-        ctx.should_call_send(event, output)
+        for line in hoped_send:
+            ctx.should_call_send(event, line)
 
 
 @respx.mock
@@ -290,3 +306,42 @@ async def test_run_script_with_index(app: App):
         ctx.receive_event(bot, event)
 
         ctx.should_call_send(event, output)
+
+
+@respx.mock
+async def test_http_exception(app: App):
+    input = "qas.list"
+    output = "请求失败, 详见后台输出"
+
+    respx.get("/data").mock(return_value=httpx.Response(500))
+
+    async with app.test_matcher() as ctx:
+        adapter = get_adapter(Adapter)
+        bot = ctx.create_bot(base=Bot, adapter=adapter)
+
+        event = fake_private_message_event_v11(message=input, user_id=SUPER_USER_ID)
+        ctx.receive_event(bot, event)
+
+        ctx.should_call_send(event, output)
+
+
+@respx.mock
+async def test_qas_exception(app: App):
+    input = "qas.list"
+    output = "测试QAS异常"
+
+    respx.get("/data").mock(
+        return_value=httpx.Response(
+            300,
+            json={"success": False, "message": output},
+        )
+    )
+
+    async with app.test_matcher() as ctx:
+        adapter = get_adapter(Adapter)
+        bot = ctx.create_bot(base=Bot, adapter=adapter)
+
+        event = fake_private_message_event_v11(message=input, user_id=SUPER_USER_ID)
+        ctx.receive_event(bot, event)
+
+        ctx.should_call_send(event, f"QAS: {output}")

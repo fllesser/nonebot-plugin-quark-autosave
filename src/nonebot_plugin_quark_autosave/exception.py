@@ -22,7 +22,7 @@ def handle_exception():
             except httpx.HTTPError:
                 matcher = current_matcher.get()
                 await matcher.send("请求失败, 详见后台输出")
-                raise
+                # raise
 
         return wrapper
 
