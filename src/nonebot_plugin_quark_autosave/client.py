@@ -155,6 +155,7 @@ class QASClient:
         if response.status_code >= 500:
             response.raise_for_status()
         resp_json = response.json()
+
         if bool(resp_json.get("success")):
             return resp_json.get("data", resp_json)
         logger.error(f"status: {response.status_code}, response: {resp_json}")

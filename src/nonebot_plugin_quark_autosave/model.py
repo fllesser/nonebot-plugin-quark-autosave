@@ -119,7 +119,7 @@ class TaskItem(BaseModel):
     enddate: str = ""
     addition: Addition | None = None
     ignore_extension: bool = False
-    runweek: RunWeek = [5, 6, 7]
+    runweek: RunWeek = Field(default_factory=lambda: [5, 6, 7])
     startfid: str | None = None
 
     detail_info: DetailInfo | None = Field(default=None, exclude=True)
