@@ -1,28 +1,17 @@
 <div align="center">
     <a href="https://v2.nonebot.dev/store">
-    <img src="https://raw.githubusercontent.com/fllesser/nonebot-plugin-template/refs/heads/resource/.docs/NoneBotPlugin.svg" width="310" alt="logo"></a>
+    <img src="https://raw.githubusercontent.com/fllesser/nonebot-plugin-template/refs/heads/resource/.docs/NoneBotPlugin.svg" width="200" alt="logo"></a>
 
 ## ✨ nonebot-plugin-quark-autosave ✨
+[![](https://img.shields.io/github/license/fllesser/nonebot-plugin-quark-autosave.svg)](./LICENSE)
+[![](https://img.shields.io/pypi/v/nonebot-plugin-quark-autosave.svg)](https://pypi.python.org/pypi/nonebot-plugin-quark-autosave)
+[![](https://img.shields.io/badge/python-3.10|3.11|3.12|3.13-blue.svg)](https://www.python.org/downloads/release/python-3100/)
+<br/>
+[![](https://img.shields.io/badge/code%20style-ruff-black?style=flat-square&logo=ruff)](https://github.com/astral-sh/ruff)
+[![](https://img.shields.io/badge/package%20manager-uv-black?style=flat-square&logo=uv)](https://github.com/astral-sh/uv)
+[![](https://results.pre-commit.ci/badge/github/fllesser/nonebot-plugin-quark-autosave/master.svg)](https://results.pre-commit.ci/latest/github/fllesser/nonebot-plugin-quark-autosave/master)
+[![](https://codecov.io/gh/fllesser/nonebot-plugin-quark-autosave/graph/badge.svg?token=55rXGtMLMx)](https://codecov.io/gh/fllesser/nonebot-plugin-quark-autosave)
 
-<a href="./LICENSE">
-    <img src="https://img.shields.io/github/license/fllesser/nonebot-plugin-quark-autosave.svg" alt="license">
-</a>
-<a href="https://pypi.python.org/pypi/nonebot-plugin-quark-autosave">
-    <img src="https://img.shields.io/pypi/v/nonebot-plugin-quark-autosave.svg" alt="pypi">
-</a>
-<img src="https://img.shields.io/badge/python-3.10+-blue.svg" alt="python">
-<a href="https://github.com/astral-sh/ruff">
-    <img src="https://img.shields.io/badge/code%20style-ruff-black?style=flat-square&logo=ruff" alt="ruff">
-</a>
-<a href="https://github.com/astral-sh/uv">
-    <img src="https://img.shields.io/badge/package%20manager-uv-black?style=flat-square&logo=uv" alt="uv">
-</a>
-<a href="https://results.pre-commit.ci/latest/github/fllesser/nonebot-plugin-quark-autosave/master">
-    <img src="https://results.pre-commit.ci/badge/github/fllesser/nonebot-plugin-quark-autosave/master.svg" alt="pre-commit" />
-</a>
-<a href="https://codecov.io/gh/fllesser/nonebot-plugin-quark-autosave" >
-    <img src="https://codecov.io/gh/fllesser/nonebot-plugin-quark-autosave/graph/badge.svg?token=55rXGtMLMx" alt="codecov" />
-</a>
 </div>
 
 ## 📖 介绍
