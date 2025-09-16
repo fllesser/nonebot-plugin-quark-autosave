@@ -1,6 +1,6 @@
 <div align="center">
     <a href="https://v2.nonebot.dev/store">
-    <img src="https://raw.githubusercontent.com/fllesser/nonebot-plugin-template/refs/heads/resource/.docs/NoneBotPlugin.svg" width="200" alt="logo"></a>
+    <img src="https://raw.githubusercontent.com/fllesser/nonebot-plugin-template/refs/heads/resource/.docs/NoneBotPlugin.svg" width="310" alt="logo"></a>
 
 ## ✨ nonebot-plugin-quark-autosave ✨
 [![](https://img.shields.io/github/license/fllesser/nonebot-plugin-quark-autosave.svg)](./LICENSE)
