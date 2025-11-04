@@ -30,7 +30,8 @@ __plugin_meta__ = PluginMetadata(
 from arclet.alconna import Alconna, Args
 from nonebot_plugin_alconna import Match, on_alconna
 
-SHARE_URL_REGEX = r"https://pan.quark.cn/s/[0-9a-zA-Z]+(?:#/list/share/[0-9a-zA-Z]+)?"
+# https://pan.quark.cn/s/203e7e764160?pwd=FLtm#/list/share/aabc9f149afc425bb8a81a51402bb5a1
+SHARE_URL_REGEX = r"https://pan\.quark\.cn/s/[0-9a-zA-Z]+(?:\?pwd=[0-9a-zA-Z]+)?(?:#/list/share/[0-9a-zA-Z]+)?"
 
 qas = on_alconna(
     Alconna(
