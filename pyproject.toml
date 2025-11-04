@@ -1,6 +1,6 @@
 [project]
 name = "nonebot-plugin-quark-autosave"
-version = "0.1.8"
+version = "0.1.9"
 description = "配合 quark-auto-save(https://github.com/Cp0204/quark-auto-save) 使用, 支持添加，删除，列出，运行任务"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -38,7 +38,7 @@ requires = ["uv_build>=0.9.2,<0.10.0"]
 build-backend = "uv_build"
 
 [tool.bumpversion]
-current_version = "0.1.8"
+current_version = "0.1.9"
 commit = true
 message = "🔖 release: bump vesion from {current_version} to {new_version}"
 tag = true
