@@ -19,7 +19,7 @@ dev = [
   "pre-commit>=4.3.0",
   "ruff>=0.14.2,<1.0.0",
 ]
-pydantic-v1 = ["pydantic>=1.10.0,<2.0.0"]
+pydantic-v1 = ["pydantic>=2.12.4,<2.13.0"]
 pydantic-v2 = ["pydantic>2.0.0,<3.0.0"]
 telebot = ["nonebot-adapter-telegram>=0.1.0b20", "nonebot2[httpx]"]
 test = [
