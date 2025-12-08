@@ -1,5 +1,5 @@
-from collections.abc import Callable
 from functools import wraps
+from collections.abc import Callable
 
 import httpx
 from nonebot.matcher import current_matcher

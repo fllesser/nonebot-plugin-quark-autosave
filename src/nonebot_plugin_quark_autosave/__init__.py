@@ -1,19 +1,19 @@
 import re
 from typing import Literal, cast
 
-from nonebot import logger, on_command, require  # noqa: F401
-from nonebot.adapters import Message
-from nonebot.matcher import Matcher
-from nonebot.params import CommandArg, Depends, RegexMatched  # noqa: F401
-from nonebot.permission import SUPERUSER
+from nonebot import logger, require, on_command  # noqa: F401
+from nonebot.params import Depends, CommandArg, RegexMatched  # noqa: F401
 from nonebot.plugin import PluginMetadata, inherit_supported_adapters
 from nonebot.typing import T_State
+from nonebot.matcher import Matcher
+from nonebot.adapters import Message
+from nonebot.permission import SUPERUSER
 
 require("nonebot_plugin_alconna")
+from .model import RunWeek, TaskItem, MagicRegex, PatternIdx
 from .client import QASClient
 from .config import Config
 from .exception import handle_exception
-from .model import MagicRegex, PatternIdx, RunWeek, TaskItem
 
 __plugin_meta__ = PluginMetadata(
     name="夸克自动转存",
@@ -27,7 +27,7 @@ __plugin_meta__ = PluginMetadata(
     extra={"author": "fllesser <fllessive@mail.com>"},
 )
 
-from arclet.alconna import Alconna, Args
+from arclet.alconna import Args, Alconna
 from nonebot_plugin_alconna import Match, on_alconna
 
 # https://pan.quark.cn/s/203e7e764160?pwd=FLtm#/list/share/aabc9f149afc425bb8a81a51402bb5a1

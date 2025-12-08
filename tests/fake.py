@@ -10,9 +10,9 @@ SUPER_USER_ID = 1000000000
 
 
 def fake_group_message_event_v11(**field) -> "GroupMessageEventV11":
-    from nonebot.adapters.onebot.v11 import GroupMessageEvent, Message
-    from nonebot.adapters.onebot.v11.event import Sender
     from pydantic import create_model
+    from nonebot.adapters.onebot.v11 import Message, GroupMessageEvent
+    from nonebot.adapters.onebot.v11.event import Sender
 
     _Fake = create_model("_Fake", __base__=GroupMessageEvent)
 
@@ -41,9 +41,9 @@ def fake_group_message_event_v11(**field) -> "GroupMessageEventV11":
 def fake_private_message_event_v11(**field) -> "PrivateMessageEventV11":
     import random
 
+    from pydantic import create_model
     from nonebot.adapters.onebot.v11 import Message, PrivateMessageEvent
     from nonebot.adapters.onebot.v11.event import Sender
-    from pydantic import create_model
 
     _Fake = create_model("_Fake", __base__=PrivateMessageEvent)
 

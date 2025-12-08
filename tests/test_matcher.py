@@ -1,11 +1,11 @@
-from fake import SUPER_USER_ID, fake_private_message_event_v11
 import httpx
-from nonebot import get_adapter
-from nonebot.adapters.onebot.v11 import Adapter, Bot
-from nonebot.compat import model_dump
-from nonebug import App
-import pytest
 import respx
+import pytest
+from fake import SUPER_USER_ID, fake_private_message_event_v11
+from nonebot import get_adapter
+from nonebug import App
+from nonebot.compat import model_dump
+from nonebot.adapters.onebot.v11 import Bot, Adapter
 
 
 def tasks_example():
@@ -51,7 +51,7 @@ def mock_qas_server():
 @respx.mock
 @pytest.mark.asyncio
 async def test_add_task(app: App):
-    from nonebot_plugin_quark_autosave.model import DetailInfo, MagicRegex, TaskItem
+    from nonebot_plugin_quark_autosave.model import TaskItem, DetailInfo, MagicRegex
 
     detail_info_json = {
         "is_owner": 1,

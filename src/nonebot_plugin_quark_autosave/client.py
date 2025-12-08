@@ -4,9 +4,9 @@ import httpx
 from nonebot import logger
 from nonebot.compat import model_dump
 
+from .model import TaskItem, DetailInfo, AutosaveData, ShareDetailPayload
 from .config import plugin_config
 from .exception import QASException
-from .model import AutosaveData, DetailInfo, ShareDetailPayload, TaskItem
 
 
 class QASClient:
