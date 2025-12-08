@@ -706,9 +706,7 @@ telebot = [
     { name = "nonebot2", extra = ["httpx"], marker = "(extra == 'group-29-nonebot-plugin-quark-autosave-pydantic-v1' and extra == 'group-29-nonebot-plugin-quark-autosave-pydantic-v2') or (extra != 'group-29-nonebot-plugin-quark-autosave-pydantic-v2' and extra == 'group-29-nonebot-plugin-quark-autosave-telebot') or (extra != 'group-29-nonebot-plugin-quark-autosave-pydantic-v1' and extra == 'group-29-nonebot-plugin-quark-autosave-telebot')" },
 ]
 test = [
-    { name = "nonebot-adapter-onebot" },
     { name = "nonebug" },
-    { name = "poethepoet" },
     { name = "pytest" },
     { name = "pytest-asyncio" },
     { name = "pytest-cov" },
@@ -743,9 +741,7 @@ telebot = [
     { name = "nonebot2", extras = ["httpx"] },
 ]
 test = [
-    { name = "nonebot-adapter-onebot", specifier = ">=2.4.6,<3.0.0" },
     { name = "nonebug", git = "https://github.com/nonebot/nonebug" },
-    { name = "poethepoet", specifier = ">=0.38.0" },
     { name = "pytest", specifier = ">=9.0.2,<10.0.0" },
     { name = "pytest-asyncio", specifier = ">=1.3.0,<1.4.0" },
     { name = "pytest-cov", specifier = ">=7.0.0" },
