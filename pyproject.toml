@@ -16,7 +16,7 @@ dependencies = [
 dev = [
   "nonebot2[fastapi, httpx]>=2.4.3,<3.0.0",
   "nonebot-adapter-onebot>=2.4.6,<3.0.0",
-  "ruff>=0.14.8,<1.0.0",
+  "ruff>=0.14.10,<1.0.0",
   "poethepoet>=0.38.0",
   { include-group = "test" },
 ]
