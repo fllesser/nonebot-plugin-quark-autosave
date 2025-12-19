@@ -28,10 +28,8 @@ repos:
       - id: uv-export
         args:
           [
-            "--no-dev",
-            "--group",
+            "--only-group",
             "telebot",
-            "--no-install-project",
             "--frozen",
             "--no-hashes",
             "--output-file=requirements.txt",
