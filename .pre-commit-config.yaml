@@ -25,3 +25,15 @@ repos:
     hooks:
       - id: uv-lock
       - id: uv-sync
+      - id: uv-export
+        args:
+          [
+            "--no-dev",
+            "--group",
+            "telebot",
+            "--no-install-project",
+            "--frozen",
+            "--no-hashes",
+            "--output-file=requirements.txt",
+            "--quiet",
+          ]
