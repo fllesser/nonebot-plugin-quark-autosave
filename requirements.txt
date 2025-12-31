@@ -66,11 +66,11 @@ nonebot2==2.4.3
     #   nonebot-plugin-waiter
 propcache==0.3.2
     # via yarl
-pydantic==2.11.7
+pydantic==2.12.5
     # via
     #   nonebot-adapter-telegram
     #   nonebot2
-pydantic-core==2.33.2
+pydantic-core==2.41.5
     # via pydantic
 pygtrie==2.5.0
     # via nonebot2
@@ -97,7 +97,7 @@ typing-extensions==4.15.0
     #   pydantic-core
     #   tarina
     #   typing-inspection
-typing-inspection==0.4.1
+typing-inspection==0.4.2
     # via pydantic
 win32-setctime==1.2.0 ; sys_platform == 'win32'
     # via loguru
